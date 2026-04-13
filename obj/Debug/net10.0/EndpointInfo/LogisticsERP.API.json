@@ -6,7 +6,7 @@
     "version": "v1"
   },
   "paths": {
-    "/api/Driver": {
+    "/api/Driver/get-all-driver": {
       "get": {
         "tags": [
           "Driver"
@@ -19,7 +19,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Driver"
+                    "$ref": "#/components/schemas/DriverResponseDto"
                   }
                 }
               },
@@ -27,7 +27,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Driver"
+                    "$ref": "#/components/schemas/DriverResponseDto"
                   }
                 }
               },
@@ -35,8 +35,56 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Driver"
+                    "$ref": "#/components/schemas/DriverResponseDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Driver/add-driver": {
+      "post": {
+        "tags": [
+          "Driver"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DriverCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DriverCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DriverCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               }
             }
@@ -93,17 +141,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               }
             }
@@ -141,17 +189,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               }
             }
@@ -179,17 +227,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               }
             }
@@ -227,20 +275,92 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VehicleResponseDto"
+                  "$ref": "#/components/schemas/DriverResponseDto"
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Vehicle/expiring": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Vehicle/assign-driver": {
+      "post": {
+        "tags": [
+          "Vehicle"
+        ],
+        "parameters": [
+          {
+            "name": "vehicleId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "driverId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Vehicle/drivers-list": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "parameters": [
+          {
+            "name": "vehicleId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -248,7 +368,64 @@
   },
   "components": {
     "schemas": {
-      "Driver": {
+      "DriverCreateDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "cnic": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobileNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "licenseNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "licenseExpiry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "typeOfLicence": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfJoining": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "salary": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/DriverStatus"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DriverResponseDto": {
         "type": "object",
         "properties": {
           "driverId": {
@@ -260,10 +437,6 @@
             "nullable": true
           },
           "cnic": {
-            "type": "string",
-            "nullable": true
-          },
-          "phone": {
             "type": "string",
             "nullable": true
           },
@@ -314,35 +487,8 @@
             "type": "string",
             "nullable": true
           },
-          "vehicle": {
-            "$ref": "#/components/schemas/Vehicle"
-          },
-          "fuelRecords": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FuelRecord"
-            },
-            "nullable": true
-          },
-          "maintenanceRecords": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MaintenanceRecord"
-            },
-            "nullable": true
-          },
-          "dutyLogs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DutyLogs"
-            },
-            "nullable": true
-          },
-          "overtimeDuties": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OvertimeDuty"
-            },
+          "vehicleName": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -352,312 +498,6 @@
         "enum": [
           0,
           1
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "DutyLogs": {
-        "type": "object",
-        "properties": {
-          "dutyId": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicleId": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicle": {
-            "$ref": "#/components/schemas/Vehicle"
-          },
-          "driverId": {
-            "type": "string",
-            "nullable": true
-          },
-          "driver": {
-            "$ref": "#/components/schemas/Driver"
-          },
-          "fromLocation": {
-            "type": "string",
-            "nullable": true
-          },
-          "toLocation": {
-            "type": "string",
-            "nullable": true
-          },
-          "dateOut": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dateIn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "totalHours": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "approvedBy": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "approvedByUser": {
-            "$ref": "#/components/schemas/User"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "Expense": {
-        "required": [
-          "amount",
-          "expenseName"
-        ],
-        "type": "object",
-        "properties": {
-          "expenseId": {
-            "type": "string",
-            "nullable": true
-          },
-          "expenseName": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "expenseDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "expenseType": {
-            "$ref": "#/components/schemas/ExpenseType"
-          },
-          "paymentMode": {
-            "$ref": "#/components/schemas/PaymentMode"
-          },
-          "expenseStatus": {
-            "$ref": "#/components/schemas/ExpenseStatus"
-          },
-          "notes": {
-            "type": "string",
-            "nullable": true
-          },
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "vehicleId": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicle": {
-            "$ref": "#/components/schemas/Vehicle"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ExpenseStatus": {
-        "enum": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "ExpenseType": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "FuelRecord": {
-        "type": "object",
-        "properties": {
-          "fuelId": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicleId": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicle": {
-            "$ref": "#/components/schemas/Vehicle"
-          },
-          "driverId": {
-            "type": "string",
-            "nullable": true
-          },
-          "driver": {
-            "$ref": "#/components/schemas/Driver"
-          },
-          "fuelingDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "odoMeterReading": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "liters": {
-            "type": "number",
-            "format": "double"
-          },
-          "costPerLiter": {
-            "type": "number",
-            "format": "double"
-          },
-          "totalCost": {
-            "type": "number",
-            "format": "double"
-          },
-          "stationName": {
-            "type": "number",
-            "format": "double"
-          },
-          "stationLocation": {
-            "type": "string",
-            "nullable": true
-          },
-          "receiptNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "donor": {
-            "type": "string",
-            "nullable": true
-          },
-          "notes": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "MaintenanceRecord": {
-        "type": "object",
-        "properties": {
-          "maintenanceRecordId": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicleId": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicle": {
-            "$ref": "#/components/schemas/Vehicle"
-          },
-          "maintenanceDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "cost": {
-            "type": "number",
-            "format": "double"
-          },
-          "nextServiceDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "addedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "OvertimeDuty": {
-        "type": "object",
-        "properties": {
-          "overtimeDutyId": {
-            "type": "string",
-            "nullable": true
-          },
-          "driverId": {
-            "type": "string",
-            "nullable": true
-          },
-          "driver": {
-            "$ref": "#/components/schemas/Driver"
-          },
-          "dutyId": {
-            "type": "string",
-            "nullable": true
-          },
-          "dutyLog": {
-            "$ref": "#/components/schemas/DutyLogs"
-          },
-          "date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "hours": {
-            "type": "number",
-            "format": "double"
-          },
-          "ratePerHour": {
-            "type": "number",
-            "format": "double"
-          },
-          "totalAmount": {
-            "type": "number",
-            "format": "double"
-          },
-          "approvedBy": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "approvedByUser": {
-            "$ref": "#/components/schemas/User"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "PaymentMode": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4
         ],
         "type": "integer",
         "format": "int32"
@@ -735,200 +575,7 @@
         "type": "integer",
         "format": "int32"
       },
-      "Vehicle": {
-        "type": "object",
-        "properties": {
-          "vehicleId": {
-            "type": "string",
-            "nullable": true
-          },
-          "number": {
-            "type": "string",
-            "nullable": true
-          },
-          "modelName": {
-            "type": "string",
-            "nullable": true
-          },
-          "company": {
-            "type": "string",
-            "nullable": true
-          },
-          "enginNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "chassisNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "doner": {
-            "type": "string",
-            "nullable": true
-          },
-          "purchsedCast": {
-            "type": "number",
-            "format": "double"
-          },
-          "depreciation": {
-            "type": "number",
-            "format": "double"
-          },
-          "registrationDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "registrationExpiry": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "fitnessExpiry": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "insuredBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "insuranceExpiry": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "typeOfInsurance": {
-            "type": "string",
-            "nullable": true
-          },
-          "insuranceFrom": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "insuranceTo": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "status": {
-            "$ref": "#/components/schemas/VehicleStatus"
-          },
-          "drivers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Driver"
-            },
-            "nullable": true
-          },
-          "maintenanceRecords": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MaintenanceRecord"
-            },
-            "nullable": true
-          },
-          "fuelRecords": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FuelRecord"
-            },
-            "nullable": true
-          },
-          "dutyLogs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DutyLogs"
-            },
-            "nullable": true
-          },
-          "expanse": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Expense"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "VehicleCreateDto": {
-        "required": [
-          "modelName",
-          "number"
-        ],
-        "type": "object",
-        "properties": {
-          "number": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "modelName": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "company": {
-            "type": "string",
-            "nullable": true
-          },
-          "enginNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "chassisNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "doner": {
-            "type": "string",
-            "nullable": true
-          },
-          "purchsedCast": {
-            "type": "number",
-            "format": "double"
-          },
-          "depreciation": {
-            "type": "number",
-            "format": "double"
-          },
-          "registrationDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "registrationExpiry": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "fitnessExpiry": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "insuredBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "insuranceFrom": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "insuranceTo": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "typeOfInsurance": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/VehicleStatus"
-          }
-        },
-        "additionalProperties": false
-      },
-      "VehicleResponseDto": {
         "type": "object",
         "properties": {
           "vehicleId": {
@@ -987,14 +634,6 @@
             "type": "string",
             "nullable": true
           },
-          "insuranceExpiry": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "typeOfInsurance": {
-            "type": "string",
-            "nullable": true
-          },
           "insuranceFrom": {
             "type": "string",
             "format": "date-time"
@@ -1003,43 +642,12 @@
             "type": "string",
             "format": "date-time"
           },
+          "typeOfInsurance": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "$ref": "#/components/schemas/VehicleStatus"
-          },
-          "drivers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Driver"
-            },
-            "nullable": true
-          },
-          "maintenanceRecords": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MaintenanceRecord"
-            },
-            "nullable": true
-          },
-          "fuelRecords": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FuelRecord"
-            },
-            "nullable": true
-          },
-          "dutyLogs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DutyLogs"
-            },
-            "nullable": true
-          },
-          "expanse": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Expense"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false

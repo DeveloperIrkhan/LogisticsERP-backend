@@ -10,5 +10,6 @@ namespace LogisticsERP.API.interfaces
         Task DeleteVehicle(string id);
         Task<VehicleResponseDto> GetVehicleById(string id);
         Task<IEnumerable<VehicleResponseDto>> GetAllVehicles();
+        Task<List<VehicleResponseDto>> GetExpiringVehicles(int days);
     }
 }

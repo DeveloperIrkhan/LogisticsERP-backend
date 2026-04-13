@@ -1,6 +1,7 @@
 ﻿using LogisticsERP.API.Data;
 using LogisticsERP.API.interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace LogisticsERP.API.Repositories
 {
@@ -42,16 +43,19 @@ namespace LogisticsERP.API.Repositories
         public async Task<T> GetByIdAsync(string id)
         {
             var result = await _DbSet.FindAsync(id);
-            if (result == null)
-            {
-                throw new Exception($"Entity with Id {id} not found.");
-            }
-            return result;
+            return result ?? throw new Exception($"Entity with Id {id} not found.");
         }
 
         public async Task Update(T entity)
         {
             _DbSet.Update(entity);
+        }
+
+        public async Task<IEnumerable<T>> WhereAsync (Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>()
+                .Where(predicate)
+                .ToListAsync();
         }
     }
 }

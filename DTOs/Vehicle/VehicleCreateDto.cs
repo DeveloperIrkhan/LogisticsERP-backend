@@ -5,10 +5,9 @@ namespace LogisticsERP.API.DTOs.Vehicle
 {
     public class VehicleCreateDto
     {
-        [Required]
+        public string VehicleId { get; set; }
         public string Number { get; set; }
 
-        [Required]
         public string ModelName { get; set; }
 
         public string Company { get; set; }

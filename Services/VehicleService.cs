@@ -38,7 +38,21 @@ namespace LogisticsERP.API.Services
         {
             //var vehicles = await _repo.GetAllAsync();
             return _mapper.Map<IEnumerable<VehicleResponseDto>>(await _repo.GetAllAsync());
-           
+
+        }
+
+        public async Task<List<VehicleResponseDto>> GetExpiringVehicles(int days)
+        {
+            var today = DateTime.UtcNow;
+            var nextDates = today.AddDays(days);
+            var expiredVehiclesList = (await _repo.WhereAsync(
+                v => v.RegistrationExpiry >= today && v.RegistrationExpiry <= nextDates
+                ||
+                v.FitnessExpiry >= today && v.FitnessExpiry <= nextDates
+                ||
+                v.InsuranceExpiry >= today && v.InsuranceExpiry <= nextDates
+                )).OrderBy(v => v.RegistrationDate).ToList();
+            return _mapper.Map<List<VehicleResponseDto>>(expiredVehiclesList);
         }
 
         public async Task<VehicleResponseDto> GetVehicleById(string id)
@@ -56,5 +70,7 @@ namespace LogisticsERP.API.Services
             var response = _mapper.Map<VehicleResponseDto>(existingVehicle);
             return response;
         }
+
+        
     }
 }

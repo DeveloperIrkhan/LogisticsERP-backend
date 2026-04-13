@@ -7,7 +7,6 @@ E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Logi
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\LogisticsERP.API.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\LogisticsERP.API.pdb
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\AutoMapper.dll
-E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Humanizer.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.Build.Framework.dll
@@ -126,3 +125,8 @@ E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Swas
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\obj\Debug\net10.0\LogisticsERP.API.sourcelink.json
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll

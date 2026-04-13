@@ -26,7 +26,7 @@ namespace LogisticsERP.API.DTOs.Vehicle
         public DateTime InsuranceTo { get; set; }
         public VehicleStatus Status { get; set; }
 
-        public List<Driver> Drivers { get; set; } = new List<Driver>();
+        public List<Driver> Drivers { get; set; } = [];
         public List<MaintenanceRecord> MaintenanceRecords { get; set; } = [];
         public List<FuelRecord> FuelRecords { get; set; } = [];
         public List<DutyLogs> DutyLogs { get; set; } = [];

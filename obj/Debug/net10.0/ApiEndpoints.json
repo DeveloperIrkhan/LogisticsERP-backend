@@ -1,15 +1,41 @@
 [
   {
     "ContainingType": "LogisticsERP.API.Controllers.DriverController",
+    "Method": "AddNewDriver",
+    "RelativePath": "api/Driver/add-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverCreateDto",
+        "Type": "LogisticsERP.API.DTOs.Drivers.DriverCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "LogisticsERP.API.DTOs.Drivers.DriverResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.DriverController",
     "Method": "GetDrivers",
-    "RelativePath": "api/Driver",
+    "RelativePath": "api/Driver/get-all-driver",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisticsERP.API.Models.Driver, LogisticsERP.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LogisticsERP.API.DTOs.Drivers.DriverResponseDto, LogisticsERP.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -55,7 +81,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "LogisticsERP.API.DTOs.Vehicle.VehicleResponseDto",
+        "Type": "LogisticsERP.API.DTOs.Drivers.DriverResponseDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -67,6 +93,59 @@
   },
   {
     "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
+    "Method": "ExpiryTracking",
+    "RelativePath": "api/Vehicle/assign-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vehicleId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
+    "Method": "DriverList",
+    "RelativePath": "api/Vehicle/drivers-list",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vehicleId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
+    "Method": "GetExpiry",
+    "RelativePath": "api/Vehicle/expiring",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "days",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
     "Method": "GetAllVehicle",
     "RelativePath": "api/Vehicle/get-all-vehicle",
     "HttpMethod": "GET",
@@ -75,7 +154,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "LogisticsERP.API.DTOs.Vehicle.VehicleResponseDto",
+        "Type": "LogisticsERP.API.DTOs.Drivers.DriverResponseDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -101,7 +180,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "LogisticsERP.API.DTOs.Vehicle.VehicleResponseDto",
+        "Type": "LogisticsERP.API.DTOs.Drivers.DriverResponseDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -120,14 +199,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "vehicleUpdateDto",
+        "Name": "dto",
         "Type": "LogisticsERP.API.DTOs.Vehicle.VehicleUpdateDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "LogisticsERP.API.DTOs.Vehicle.VehicleResponseDto",
+        "Type": "LogisticsERP.API.DTOs.Drivers.DriverResponseDto",
         "MediaTypes": [
           "text/plain",
           "application/json",

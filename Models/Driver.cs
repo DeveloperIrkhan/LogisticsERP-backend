@@ -1,7 +1,6 @@
 ﻿using LogisticsERP.API.enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Numerics;
 
 namespace LogisticsERP.API.Models
 {
@@ -10,7 +9,6 @@ namespace LogisticsERP.API.Models
         [Key] public string DriverId { get; set; } = $"PRCS-DRV-{Guid.NewGuid()}";
         public string FullName { get; set; }
         public string CNIC { get; set; }
-        public string Phone { get; set; }
         public string MobileNumber { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
@@ -21,7 +19,7 @@ namespace LogisticsERP.API.Models
         public string Salary { get; set; }
         public DriverStatus Status { get; set; }
         public string Description { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         //FORIGN KEY TABLE 
         // Navigation property for the related Vehicle
