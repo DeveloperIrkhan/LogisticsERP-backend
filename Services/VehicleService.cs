@@ -10,12 +10,14 @@ namespace LogisticsERP.API.Services
     {
         private readonly IGenericRepo<Vehicle> _repo;
         private readonly IMapper _mapper;
+        private readonly IVehicleRepo _vehicleRepo;
         private readonly AppDbContext _context;
 
-        public VehicleService(IGenericRepo<Vehicle> genericRepo, IMapper mapper, AppDbContext appDbContext)
+        public VehicleService(IGenericRepo<Vehicle> genericRepo, IMapper mapper, AppDbContext appDbContext, IVehicleRepo vehicleRepo)
         {
             _repo = genericRepo;
             _mapper = mapper;
+            _vehicleRepo = vehicleRepo;
             _context = appDbContext;
         }
 
@@ -53,6 +55,11 @@ namespace LogisticsERP.API.Services
                 v.InsuranceExpiry >= today && v.InsuranceExpiry <= nextDates
                 )).OrderBy(v => v.RegistrationDate).ToList();
             return _mapper.Map<List<VehicleResponseDto>>(expiredVehiclesList);
+        }
+
+        public async Task<VehicleResponseDto> GetFullRecordByVehicleById(string id)
+        {
+            return await _vehicleRepo.GetVehicleById(id) ?? throw new Exception($"No data found for id {id}");
         }
 
         public async Task<VehicleResponseDto> GetVehicleById(string id)

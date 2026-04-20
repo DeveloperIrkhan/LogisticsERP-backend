@@ -23,6 +23,11 @@ namespace LogisticsERP.API.Repositories
             return entity;
         }
 
+        public async Task AddRangeAsync(IEnumerable<T> entities)
+        {
+            await _DbSet.AddRangeAsync(entities);
+        }
+
         public async Task Delete(string Id)
         {
             var result = await _DbSet.FindAsync(Id);

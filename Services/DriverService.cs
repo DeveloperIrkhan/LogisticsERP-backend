@@ -4,6 +4,7 @@ using LogisticsERP.API.DTOs.Drivers;
 using LogisticsERP.API.DTOs.Vehicle;
 using LogisticsERP.API.interfaces;
 using LogisticsERP.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LogisticsERP.API.Services
 {
@@ -67,7 +68,17 @@ namespace LogisticsERP.API.Services
             throw new NotImplementedException();
         }
 
-     
+        //return URL of cloudinar uploaded image save the url in database
+        //public async Task<DriverResponseDto> ImageUploadingAsync(string FileUrlFileUrl)
+        //{
+        //    if (FileUrlFileUrl == null)
+        //        throw new Exception("image url should not be empty!");
+        //    await _
+
+
+        //    await _docRepo.(newDocuments);
+        //    await _dbContext.SaveChangesAsync();
+        //}
 
         public Task<IEnumerable<DriverResponseDto>> GetAllDrivers()
         {

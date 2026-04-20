@@ -93,27 +93,6 @@
   },
   {
     "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
-    "Method": "ExpiryTracking",
-    "RelativePath": "api/Vehicle/assign-driver",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "vehicleId",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "driverId",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
     "Method": "DriverList",
     "RelativePath": "api/Vehicle/drivers-list",
     "HttpMethod": "GET",
@@ -146,6 +125,27 @@
   },
   {
     "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
+    "Method": "ExpiryTracking",
+    "RelativePath": "api/Vehicle/expiry-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vehicleId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
     "Method": "GetAllVehicle",
     "RelativePath": "api/Vehicle/get-all-vehicle",
     "HttpMethod": "GET",
@@ -155,6 +155,32 @@
     "ReturnTypes": [
       {
         "Type": "LogisticsERP.API.DTOs.Drivers.DriverResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
+    "Method": "GetFullRecordOdVehicleById",
+    "RelativePath": "api/Vehicle/get-full-record-of-vehicleId",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "LogisticsERP.API.DTOs.Vehicle.VehicleResponseDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -215,5 +241,26 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
+    "Method": "UplaodDocuemtns",
+    "RelativePath": "api/Vehicle/upload-documents",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vehicleId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "files",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

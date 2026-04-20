@@ -130,3 +130,4 @@ E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Micr
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\CloudinaryDotNet.dll

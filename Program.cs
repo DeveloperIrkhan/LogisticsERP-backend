@@ -40,6 +40,9 @@ builder.Services.AddScoped(typeof(IGenericRepo<>), typeof
     (GenericRepo<>));
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IVehicleRepo, VehicleRepo>();
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(_mapper => _mapper.AddProfile<MapperProfile>()

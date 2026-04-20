@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LogisticsERP.API.DTOs.Documents;
 using LogisticsERP.API.DTOs.Drivers;
 using LogisticsERP.API.DTOs.User;
 using LogisticsERP.API.DTOs.Vehicle;
@@ -24,6 +25,10 @@ namespace LogisticsERP.API.Helpers
             CreateMap<Driver, DriverResponseDto>();
             CreateMap<DriverCreateDto, Driver>();
             CreateMap<DriverUpdateDto, Driver>();
+
+            //mapping VehicleDocuments to Dtos
+            CreateMap<DocumentCreateDto, VehicleDocuments>();
+            CreateMap<VehicleDocuments, DocumentResponseDto>();
 
         }
     }

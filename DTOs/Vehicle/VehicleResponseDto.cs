@@ -1,4 +1,6 @@
-﻿using LogisticsERP.API.enums;
+﻿using LogisticsERP.API.DTOs.Documents;
+using LogisticsERP.API.DTOs.Drivers;
+using LogisticsERP.API.enums;
 using LogisticsERP.API.Models;
 
 namespace LogisticsERP.API.DTOs.Vehicle
@@ -26,10 +28,11 @@ namespace LogisticsERP.API.DTOs.Vehicle
         public DateTime InsuranceTo { get; set; }
         public VehicleStatus Status { get; set; }
 
-        public List<Driver> Drivers { get; set; } = [];
-        public List<MaintenanceRecord> MaintenanceRecords { get; set; } = [];
-        public List<FuelRecord> FuelRecords { get; set; } = [];
-        public List<DutyLogs> DutyLogs { get; set; } = [];
-        public List<Expense> Expanse { get; set; } = [];
+        public List<DriverResponseDto> Drivers { get; set; } = [];
+        public List<DocumentResponseDto> Documents { get; set; } = [];
+        //public List<> MaintenanceRecords { get; set; } = [];
+        //public List<FuelRecord> FuelRecords { get; set; } = [];
+        //public List<DutyLogs> DutyLogs { get; set; } = [];
+        //public List<Expense> Expanse { get; set; } = [];
     }
 }

@@ -23,6 +23,5 @@ namespace LogisticsERP.API.DTOs.Drivers
         public string VehicleId { get; set; }
 
         // Optional: include vehicle basic info
-        public string? VehicleName { get; set; }
     }
 }

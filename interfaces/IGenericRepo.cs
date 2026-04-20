@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using LogisticsERP.API.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace LogisticsERP.API.interfaces
 {
@@ -11,5 +13,6 @@ namespace LogisticsERP.API.interfaces
         Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> predicate);
 
         Task Delete(string Id);
+        Task AddRangeAsync(IEnumerable<T> entities);
     }
 }

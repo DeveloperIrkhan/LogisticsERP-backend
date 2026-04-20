@@ -11,6 +11,7 @@ namespace LogisticsERP.API.interfaces
         Task<DriverResponseDto> UpdateDriver(DriverUpdateDto driver);
         Task DeleteVehicle(string id);
         Task<DriverResponseDto> GetDriverById(string id);
+        //Task<DriverResponseDto> ImageUploadingAsync(string FileUrl);
         Task<IEnumerable<DriverResponseDto>> GetAllDrivers();
     }
 }

@@ -18,6 +18,6 @@ namespace LogisticsERP.API.Models
 
         public string? PublicId { get; set; }
 
-        public DateTime UploadedAt { get; set; } = DateTime.Now;
+        public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
     }
 }

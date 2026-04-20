@@ -9,6 +9,7 @@
       "LogisticsERP.API/1.0.0": {
         "dependencies": {
           "AutoMapper": "16.1.1",
+          "CloudinaryDotNet": "1.28.0",
           "Microsoft.AspNetCore.OpenApi": "10.0.3",
           "Microsoft.EntityFrameworkCore.Design": "10.0.3",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.0",
@@ -26,6 +27,17 @@
           "lib/net10.0/AutoMapper.dll": {
             "assemblyVersion": "16.0.0.0",
             "fileVersion": "16.1.1.0"
+          }
+        }
+      },
+      "CloudinaryDotNet/1.28.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/CloudinaryDotNet.dll": {
+            "assemblyVersion": "1.28.0.0",
+            "fileVersion": "1.28.0.0"
           }
         }
       },
@@ -601,6 +613,13 @@
       "sha512": "sha512-VNEky8JA15ci+oIDRGHITOGOpV4dILsf8pnn24QhDl2urtqgJ2IXiS/V2EtGU17P/+f6OeFQPJETaZXV9QOIZg==",
       "path": "automapper/16.1.1",
       "hashPath": "automapper.16.1.1.nupkg.sha512"
+    },
+    "CloudinaryDotNet/1.28.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-o5Dfp5DrpF69s8qjlh4dxzXuJUCRxt7KQaweU8wMDxd1cPFONCVNZsgFQZ3v0PZDN76fLonZ5vFDjVTA3UTjCA==",
+      "path": "cloudinarydotnet/1.28.0",
+      "hashPath": "cloudinarydotnet.1.28.0.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",

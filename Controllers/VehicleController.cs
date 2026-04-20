@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LogisticsERP.API.DTOs.Documents;
 using LogisticsERP.API.DTOs.Drivers;
 using LogisticsERP.API.DTOs.Vehicle;
 using LogisticsERP.API.interfaces;
@@ -12,16 +13,19 @@ namespace LogisticsERP.API.Controllers
     {
         private readonly IVehicleService _serviceVehicle;
         private readonly IDriverService _driverService;
+        private readonly ICloudinaryService _cloudinaryService;
+        private readonly IDocumentService _documentService;
 
-        public VehicleController(IVehicleService vehicleService, IDriverService driverService)
+        public VehicleController(IVehicleService vehicleService, IDriverService driverService, ICloudinaryService cloudinaryService, IDocumentService documentService)
         {
             _serviceVehicle = vehicleService;
             _driverService = driverService;
+            _cloudinaryService = cloudinaryService;
+            _documentService = documentService;
         }
 
 
         #region Getting All Vehicals
-
         [HttpGet("get-all-vehicle")]
         public async Task<ActionResult<DriverResponseDto>> GetAllVehicle()
         {
@@ -49,6 +53,19 @@ namespace LogisticsERP.API.Controllers
         }
         #endregion
 
+        #region Getting vehicle related record by Id
+        [HttpGet("get-full-record-of-vehicleId")]
+        public async Task<ActionResult<VehicleResponseDto>> GetFullRecordOdVehicleById(string id)
+        {
+            var vehicle = await _serviceVehicle.GetFullRecordByVehicleById(id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+            return Ok(vehicle);
+        }
+        #endregion
+
         #region Getting vehicle by Id
         [HttpGet("get-vehicle-by-id")]
         public async Task<ActionResult<DriverResponseDto>> GetVehicleById(string id)
@@ -72,27 +89,26 @@ namespace LogisticsERP.API.Controllers
                 return BadRequest("Invalid vehicle data.");
             }
             var updatedVehicle = await _serviceVehicle.UpdateVehicle(dto);
-            return updatedVehicle ==null ? 
-                 NotFound() 
+            return updatedVehicle == null ?
+                 NotFound()
                 : Ok(updatedVehicle);
         }
         #endregion
 
         #region Expiry Tracking (Registration / Insurance / Fitness)
         [HttpGet("expiring")]
-        public async Task<IActionResult> GetExpiry([FromQuery] int days=30)
+        public async Task<IActionResult> GetExpiry([FromQuery] int days = 30)
         {
             var result = _serviceVehicle.GetExpiringVehicles(days);
             return Ok(result);
         }
         #endregion
 
-
         #region assign-drivers
-        [HttpPost("assign-driver")]
+        [HttpPost("expiry-driver")]
         public async Task<IActionResult> ExpiryTracking(string vehicleId, string driverId)
         {
-            var result = await _driverService.AssignDriver(vehicleId,driverId);
+            var result = await _driverService.AssignDriver(vehicleId, driverId);
             return Ok(result);
         }
         #endregion
@@ -101,7 +117,28 @@ namespace LogisticsERP.API.Controllers
         [HttpGet("drivers-list")]
         public async Task<IActionResult> DriverList(string vehicleId)
         {
-            var result = await _driverService.DriverListAssignedToSpecficVehicle(vehicleId);            return Ok(result);
+            var result = await _driverService.DriverListAssignedToSpecficVehicle(vehicleId); return Ok(result);
+        }
+        #endregion
+
+        #region creating vehicle documents
+        [HttpPost("upload-documents")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UplaodDocuemtns(string vehicleId, [FromForm] List<IFormFile> files)
+        {
+            if (files == null || files.Count == 0)
+                return BadRequest("No files uploaded.");
+            var uploadResults = await _cloudinaryService.UploadPdfDocuments(files, $"vehicle-documents/{vehicleId}");
+            
+            var documentDtos = uploadResults.Select(x => new DocumentCreateDto
+            {
+                VehicleId = vehicleId,
+                DocumentType = "",
+                FileUrl = x.FileUrl,
+                PublicId = x.PublicId
+            }).ToList();    
+            var results = await _documentService.InsertDocuments(documentDtos);
+            return Ok(uploadResults);
         }
         #endregion
     }
