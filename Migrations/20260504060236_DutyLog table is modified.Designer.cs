@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LogisticsERP.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260311100451_vehicle models and log changes")]
-    partial class vehiclemodelsandlogchanges
+    [Migration("20260504060236_DutyLog table is modified")]
+    partial class DutyLogtableismodified
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,6 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -67,8 +66,7 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
+                    b.Property<string>("PhotoUrl")
                         .HasColumnType("text");
 
                     b.Property<string>("Salary")
@@ -80,7 +78,6 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("VehicleId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("typeOfLicence")
@@ -119,6 +116,10 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("DriverId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DutyType")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -539,8 +540,7 @@ namespace LogisticsERP.API.Migrations
                     b.HasOne("LogisticsERP.API.Models.Vehicle", "Vehicle")
                         .WithMany("Drivers")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Vehicle");
                 });

@@ -7,5 +7,6 @@ namespace LogisticsERP.API.interfaces
         Task<List<CloudinaryUploadResultDto>> UploadPdfDocuments(IEnumerable<IFormFile> filesfiles, string? destinationFolderName);
         Task<CloudinaryUploadResultDto> UploadImage(IFormFile formFile, string? destinationFolderName);
         Task DeleteFileAsync(string publicId);
+        Task<CloudinaryUploadResultDto> UpdateFileAsync(string publicId, IFormFile newFile, string? destinationFolderName);
     }
 }

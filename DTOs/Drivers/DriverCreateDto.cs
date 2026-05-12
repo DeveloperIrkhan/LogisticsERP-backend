@@ -7,18 +7,20 @@ namespace LogisticsERP.API.DTOs.Drivers
 {
     public class DriverCreateDto
     {
-        public string FullName { get; set; }
-        public string CNIC { get; set; }
-        public string MobileNumber { get; set; }
-        public string Email { get; set; }
-        public string Address { get; set; }
-        public string LicenseNumber { get; set; }
-        public DateTime LicenseExpiry { get; set; }
-        public string typeOfLicence { get; set; }
-        public DateTime DateOfJoining { get; set; }
-        public string Salary { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string CNIC { get; set; } = string.Empty;
+        public string MobileNumber { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string LicenseNumber { get; set; } = string.Empty;
+        public IFormFile? Photo { get; set; } = null;
+        public string? PhotoUrl { get; set; } = string.Empty;
+        public DateTime LicenseExpiry { get; set; } = DateTime.UtcNow;
+        public string typeOfLicence { get; set; } = string.Empty;
+        public DateTime DateOfJoining { get; set; } = DateTime.UtcNow;
+        public string Salary { get; set; } = string.Empty;
         public DriverStatus Status { get; set; }
-        public string Description { get; set; }
-        public string? VehicleId { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string VehicleId { get; set; } = string.Empty;
     }
 }

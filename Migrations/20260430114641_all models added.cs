@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LogisticsERP.API.Migrations
 {
     /// <inheritdoc />
-    public partial class updatedidfrominttostrings : Migration
+    public partial class allmodelsadded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -84,7 +84,6 @@ namespace LogisticsERP.API.Migrations
                     DriverId = table.Column<string>(type: "text", nullable: false),
                     FullName = table.Column<string>(type: "text", nullable: false),
                     CNIC = table.Column<string>(type: "text", nullable: false),
-                    Phone = table.Column<string>(type: "text", nullable: false),
                     MobileNumber = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
@@ -96,7 +95,7 @@ namespace LogisticsERP.API.Migrations
                     Status = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    VehicleId = table.Column<string>(type: "text", nullable: false)
+                    VehicleId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -107,6 +106,28 @@ namespace LogisticsERP.API.Migrations
                         principalTable: "Vehicles",
                         principalColumn: "VehicleId",
                         onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VehicleDocuments",
+                columns: table => new
+                {
+                    DocumentId = table.Column<string>(type: "text", nullable: false),
+                    VehicleId = table.Column<string>(type: "text", nullable: false),
+                    DocumentType = table.Column<string>(type: "text", nullable: false),
+                    FileUrl = table.Column<string>(type: "text", nullable: false),
+                    PublicId = table.Column<string>(type: "text", nullable: true),
+                    UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VehicleDocuments", x => x.DocumentId);
+                    table.ForeignKey(
+                        name: "FK_VehicleDocuments_Vehicles_VehicleId",
+                        column: x => x.VehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "VehicleId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,7 +172,12 @@ namespace LogisticsERP.API.Migrations
                     ToLocation = table.Column<string>(type: "text", nullable: false),
                     DateOut = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateIn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Donor = table.Column<string>(type: "text", nullable: false),
+                    KillometerOut = table.Column<decimal>(type: "numeric", nullable: true),
+                    KillometerIn = table.Column<decimal>(type: "numeric", nullable: true),
                     TotalHours = table.Column<decimal>(type: "numeric", nullable: true),
+                    Purpose = table.Column<string>(type: "text", nullable: false),
+                    OfficerName = table.Column<string>(type: "text", nullable: false),
                     ApprovedBy = table.Column<int>(type: "integer", nullable: true),
                     ApprovedByUserUserId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -189,6 +215,7 @@ namespace LogisticsERP.API.Migrations
                     OdoMeterReading = table.Column<int>(type: "integer", nullable: false),
                     Liters = table.Column<decimal>(type: "numeric", nullable: false),
                     CostPerLiter = table.Column<decimal>(type: "numeric", nullable: false),
+                    Mileage = table.Column<int>(type: "integer", nullable: true),
                     TotalCost = table.Column<decimal>(type: "numeric", nullable: false),
                     StationName = table.Column<decimal>(type: "numeric", nullable: false),
                     StationLocation = table.Column<string>(type: "text", nullable: false),
@@ -218,9 +245,12 @@ namespace LogisticsERP.API.Migrations
                 name: "MaintenanceRecords",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    MaintenanceRecordId = table.Column<string>(type: "text", nullable: false),
                     VehicleId = table.Column<string>(type: "text", nullable: false),
                     MaintenanceDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CurrentKm = table.Column<decimal>(type: "numeric", nullable: false),
+                    NextMaintenanceKm = table.Column<decimal>(type: "numeric", nullable: true),
+                    NextMaintenanceDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Cost = table.Column<decimal>(type: "numeric", nullable: false),
                     NextServiceDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -231,7 +261,7 @@ namespace LogisticsERP.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MaintenanceRecords", x => x.Id);
+                    table.PrimaryKey("PK_MaintenanceRecords", x => x.MaintenanceRecordId);
                     table.ForeignKey(
                         name: "FK_MaintenanceRecords_Drivers_DriverId",
                         column: x => x.DriverId,
@@ -361,6 +391,11 @@ namespace LogisticsERP.API.Migrations
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VehicleDocuments_VehicleId",
+                table: "VehicleDocuments",
+                column: "VehicleId");
         }
 
         /// <inheritdoc />
@@ -377,6 +412,9 @@ namespace LogisticsERP.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "OvertimeDuties");
+
+            migrationBuilder.DropTable(
+                name: "VehicleDocuments");
 
             migrationBuilder.DropTable(
                 name: "DutyLogs");

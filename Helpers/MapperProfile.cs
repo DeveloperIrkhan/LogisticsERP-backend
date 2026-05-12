@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LogisticsERP.API.DTOs.Documents;
 using LogisticsERP.API.DTOs.Drivers;
+using LogisticsERP.API.DTOs.Maintenance;
 using LogisticsERP.API.DTOs.User;
 using LogisticsERP.API.DTOs.Vehicle;
 using LogisticsERP.API.Models;
@@ -29,6 +30,16 @@ namespace LogisticsERP.API.Helpers
             //mapping VehicleDocuments to Dtos
             CreateMap<DocumentCreateDto, VehicleDocuments>();
             CreateMap<VehicleDocuments, DocumentResponseDto>();
+
+            //mapping Maintenance to Dtos
+            CreateMap<MaintenanceRecord, MaintenanceResponseDto>();
+            CreateMap<MaintenanceCreateDto, MaintenanceRecord>();
+            CreateMap<MaintenanceUpdateDto, MaintenanceRecord>();
+            CreateMap<MaintenanceRecord, MaintenanceSummaryDto>().ReverseMap();
+
+
+
+
 
         }
     }

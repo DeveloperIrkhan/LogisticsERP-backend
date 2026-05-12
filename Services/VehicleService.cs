@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LogisticsERP.API.Data;
 using LogisticsERP.API.DTOs.Vehicle;
+using LogisticsERP.API.enums;
 using LogisticsERP.API.interfaces;
 using LogisticsERP.API.Models;
 
@@ -19,6 +20,11 @@ namespace LogisticsERP.API.Services
             _mapper = mapper;
             _vehicleRepo = vehicleRepo;
             _context = appDbContext;
+        }
+
+        public async Task<List<VehicleResponseDto>> GetVehicles(VehicleFilterDto vehicleFilter)
+        {
+            return await _vehicleRepo.GetVehicles(vehicleFilter);
         }
 
         public async Task<VehicleResponseDto> CreateVehicle(VehicleCreateDto vehicle)
@@ -62,12 +68,6 @@ namespace LogisticsERP.API.Services
             return await _vehicleRepo.GetVehicleById(id) ?? throw new Exception($"No data found for id {id}");
         }
 
-        public async Task<VehicleResponseDto> GetVehicleById(string id)
-        {
-            var response = _mapper.Map<VehicleResponseDto>(await _repo.GetByIdAsync(id));
-            return response ?? throw new Exception($"No data found for id {id}");
-        }
-
         public async Task<VehicleResponseDto> UpdateVehicle(VehicleUpdateDto vehicle)
         {
             var existingVehicle = await _repo.GetByIdAsync(vehicle.VehicleId) ?? throw new Exception($"No data found for id {vehicle.VehicleId}");
@@ -78,6 +78,73 @@ namespace LogisticsERP.API.Services
             return response;
         }
 
-        
+        public async Task<VehicleResponseDto> GetVehicleById(string id)
+        {
+            var response = _mapper.Map<VehicleResponseDto>(await _repo.GetByIdAsync(id));
+            return response ?? throw new Exception($"No data found for id {id}");
+        }
+
+        public async Task<List<VehicleResponseDto>> GetAssignedVehicleList(VehicleStatus Status)
+        {
+            try
+            {
+                var response = await _vehicleRepo.GetAssignedVehicleList(Status);
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching {Status} vehicle list {ex.Message}");
+            }
+        }
+
+        public async Task<List<VehicleResponseDto>> GetUnAssignedVehicleList(VehicleStatus Status)
+        {
+            try
+            {
+                var response = await _vehicleRepo.GetUnAssignedVehicleList(Status);
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching {Status} vehicle list {ex.Message}");
+            }
+        }
+
+
+        public async Task<ApiResponse<VehicleResponseDto>> ChangeVehicleStatusAsync(string vehicleId, VehicleStatus status)
+        {
+            try
+            {
+                var response = await _vehicleRepo.ChangeStatusOfVehicle(vehicleId, status);
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching {status} vehicle list {ex.Message}");
+            }
+        }
+
+
+        public async Task<ApiResponse<VehicleResponseDto>> GetDocumentOfVehicleById(string id)
+        {
+            try
+            {
+                var result = await _vehicleRepo.GetDocumentOfVehicleById(id);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching document of vehicle with id {id} {ex.Message}");
+            }
+        }
+
+        public async Task<IEnumerable<VehicleResponseDto>> GetVehicleStatus(VehicleStatus vehicleStatus)
+        {
+            var result = await _vehicleRepo.GetVehicleStatusAsync(vehicleStatus);
+            return result;
+        }
     }
 }

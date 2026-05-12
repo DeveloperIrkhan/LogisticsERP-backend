@@ -38,7 +38,7 @@ namespace LogisticsERP.API.Services
         {
             try
             {
-                if (documentCreateDto == null || !documentCreateDto.Any())
+                if (documentCreateDto == null || documentCreateDto.Count == 0)
                     throw new Exception("Documents should not be empty!");
 
                 var newDocuments = _mapper.Map<List<VehicleDocuments>>(documentCreateDto);

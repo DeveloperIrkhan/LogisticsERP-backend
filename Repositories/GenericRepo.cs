@@ -36,8 +36,6 @@ namespace LogisticsERP.API.Repositories
                 throw new Exception($"Entity with Id {Id} not found.");
             }
             _DbSet.Remove(result);
-            // Save changes to the database will be now in the service layer
-            //await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()

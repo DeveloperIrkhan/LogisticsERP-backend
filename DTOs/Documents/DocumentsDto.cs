@@ -41,7 +41,12 @@
         public DateTime UploadedAt { get; set; }
     }
 
-
+    public class UpdateDocumentRequest
+    {
+        public string PublicId { get; set; }
+        public IFormFile NewFile { get; set; }
+        public string? DestinationFolderName { get; set; }
+    }
 
 
 }

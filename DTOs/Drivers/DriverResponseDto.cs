@@ -19,8 +19,8 @@ namespace LogisticsERP.API.DTOs.Drivers
         public DriverStatus Status { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
-
-        public string VehicleId { get; set; }
+        public string PhotoUrl { get; set; }
+        public string? VehicleId { get; set; }
 
         // Optional: include vehicle basic info
     }

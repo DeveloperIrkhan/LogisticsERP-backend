@@ -22,7 +22,6 @@ namespace LogisticsERP.API.Models
         public string InsuredBy { get; set; }
         public DateTime InsuranceExpiry { get; set; }
         public string TypeOfInsurance { get; set; }
-
         public DateTime InsuranceFrom { get; set; }
         public DateTime InsuranceTo { get; set; }
         public VehicleStatus Status { get; set; }

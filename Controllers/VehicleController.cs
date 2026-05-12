@@ -2,7 +2,10 @@
 using LogisticsERP.API.DTOs.Documents;
 using LogisticsERP.API.DTOs.Drivers;
 using LogisticsERP.API.DTOs.Vehicle;
+using LogisticsERP.API.enums;
 using LogisticsERP.API.interfaces;
+using LogisticsERP.API.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsERP.API.Controllers
@@ -11,25 +14,20 @@ namespace LogisticsERP.API.Controllers
     [Route("api/[controller]")]
     public class VehicleController : ControllerBase
     {
-        private readonly IVehicleService _serviceVehicle;
+        private readonly IVehicleService _vehicleService;
         private readonly IDriverService _driverService;
-        private readonly ICloudinaryService _cloudinaryService;
-        private readonly IDocumentService _documentService;
 
-        public VehicleController(IVehicleService vehicleService, IDriverService driverService, ICloudinaryService cloudinaryService, IDocumentService documentService)
+        public VehicleController(IVehicleService vehicleService, IDriverService driverService)
         {
-            _serviceVehicle = vehicleService;
+            _vehicleService = vehicleService;
             _driverService = driverService;
-            _cloudinaryService = cloudinaryService;
-            _documentService = documentService;
         }
-
 
         #region Getting All Vehicals
         [HttpGet("get-all-vehicle")]
         public async Task<ActionResult<DriverResponseDto>> GetAllVehicle()
         {
-            var vehicles = await _serviceVehicle.GetAllVehicles();
+            var vehicles = await _vehicleService.GetAllVehicles();
             if (vehicles == null)
             {
                 return NotFound();
@@ -42,22 +40,22 @@ namespace LogisticsERP.API.Controllers
 
         #region Adding New Vehicle
         [HttpPost("add-vehicle")]
-        public async Task<ActionResult<DriverResponseDto>> AddVehicle([FromBody] VehicleCreateDto vehicleCreateDto)
+        public async Task<ActionResult<VehicleResponseDto>> AddVehicle([FromBody] VehicleCreateDto vehicleCreateDto)
         {
             if (vehicleCreateDto == null)
             {
                 return BadRequest("Invalid vehicle data.");
             }
-            var createdVehicle = await _serviceVehicle.CreateVehicle(vehicleCreateDto);
+            var createdVehicle = await _vehicleService.CreateVehicle(vehicleCreateDto);
             return CreatedAtAction(nameof(GetAllVehicle), new { id = createdVehicle.VehicleId }, createdVehicle);
         }
         #endregion
 
-        #region Getting vehicle related record by Id
+        #region Getting full record of vehicle using vehicleId
         [HttpGet("get-full-record-of-vehicleId")]
         public async Task<ActionResult<VehicleResponseDto>> GetFullRecordOdVehicleById(string id)
         {
-            var vehicle = await _serviceVehicle.GetFullRecordByVehicleById(id);
+            var vehicle = await _vehicleService.GetFullRecordByVehicleById(id);
             if (vehicle == null)
             {
                 return NotFound();
@@ -66,16 +64,64 @@ namespace LogisticsERP.API.Controllers
         }
         #endregion
 
-        #region Getting vehicle by Id
+        #region Getting vehicle documents of vehicle by Id
+        [HttpGet("get-documents-of-vehicle")]
+        public async Task<ActionResult<VehicleResponseDto>> GetDocumentOfVehicleById(string id)
+        {
+            var vehicle = await _vehicleService.GetDocumentOfVehicleById(id);
+            return Ok(vehicle);
+        }
+        #endregion
+
+        #region Getting only vehicle by Id
         [HttpGet("get-vehicle-by-id")]
         public async Task<ActionResult<DriverResponseDto>> GetVehicleById(string id)
         {
-            var vehicle = await _serviceVehicle.GetVehicleById(id);
+            var vehicle = await _vehicleService.GetVehicleById(id);
             if (vehicle == null)
             {
                 return NotFound();
             }
             return Ok(vehicle);
+        }
+        #endregion
+
+        #region Getting only Assigned vehicles
+        [HttpGet("get-assigned-vehicle-list")]
+        public async Task<ActionResult<ApiResponse<DriverResponseDto>>> GetAssignedVehicleList()
+        {
+            var vehicle = await _vehicleService.GetAssignedVehicleList(VehicleStatus.Active);
+            if (vehicle == null)
+            {
+                return new ApiResponse<DriverResponseDto>
+                {
+                    Success = false,
+                    Message = "No assigned vehicles found."
+                };
+            }
+            return Ok(vehicle);
+        }
+        #endregion
+
+        #region Getting only Unassigned vehicles
+        [HttpGet("get-unassigned-vehicle-list")]
+        public async Task<ActionResult<DriverResponseDto>> GetUnAssignedVehicleList()
+        {
+            var vehicle = await _vehicleService.GetUnAssignedVehicleList(VehicleStatus.InActive);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+            return Ok(vehicle);
+        }
+        #endregion
+
+        #region specfic vehicle Assigned driver list
+        [HttpGet("get-assigned-drivers-for-vehicle")]
+        public async Task<ActionResult<DriverResponseDto>> GerDriverListForSpecficVehicle(string vehicleId)
+        {
+            var response = await _driverService.GetAssignedDriversListForSignleVehicle(vehicleId);
+            return Ok(response);
         }
         #endregion
 
@@ -88,10 +134,19 @@ namespace LogisticsERP.API.Controllers
             {
                 return BadRequest("Invalid vehicle data.");
             }
-            var updatedVehicle = await _serviceVehicle.UpdateVehicle(dto);
+            var updatedVehicle = await _vehicleService.UpdateVehicle(dto);
             return updatedVehicle == null ?
                  NotFound()
                 : Ok(updatedVehicle);
+        }
+        #endregion
+
+        #region Filtering 
+        [HttpGet("filtering-vehicle")]
+        public async Task<IActionResult> VehivleFiltering([FromQuery] VehicleFilterDto vehicleFilterDto)
+        {
+            var result = await _vehicleService.GetVehicles(vehicleFilterDto);
+            return Ok(result);
         }
         #endregion
 
@@ -99,46 +154,53 @@ namespace LogisticsERP.API.Controllers
         [HttpGet("expiring")]
         public async Task<IActionResult> GetExpiry([FromQuery] int days = 30)
         {
-            var result = _serviceVehicle.GetExpiringVehicles(days);
+            var result = _vehicleService.GetExpiringVehicles(days);
             return Ok(result);
         }
         #endregion
 
-        #region assign-drivers
-        [HttpPost("expiry-driver")]
-        public async Task<IActionResult> ExpiryTracking(string vehicleId, string driverId)
+        #region unassign-drivers using vehicle-Id
+        [HttpPost("unassign-driver")]
+        public async Task<IActionResult> UnassignDriver(string vehicleId)
         {
-            var result = await _driverService.AssignDriver(vehicleId, driverId);
+            var result = await _driverService.UnassignDriver(vehicleId);
             return Ok(result);
         }
         #endregion
 
-        #region assign-drivers
+        #region drivers-list
         [HttpGet("drivers-list")]
         public async Task<IActionResult> DriverList(string vehicleId)
         {
-            var result = await _driverService.DriverListAssignedToSpecficVehicle(vehicleId); return Ok(result);
+            var result = await _driverService.DriverListAssignedToSpecficVehicle(vehicleId);
+            return Ok(result);
         }
         #endregion
 
-        #region creating vehicle documents
-        [HttpPost("upload-documents")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UplaodDocuemtns(string vehicleId, [FromForm] List<IFormFile> files)
+        #region change vehicle state 
+        [HttpPut("change-vehicle-state")]
+        public async Task<ActionResult<VehicleResponseDto>> MakeVehicleIsActive([FromQuery] string vehicleId, VehicleStatus status)
         {
-            if (files == null || files.Count == 0)
-                return BadRequest("No files uploaded.");
-            var uploadResults = await _cloudinaryService.UploadPdfDocuments(files, $"vehicle-documents/{vehicleId}");
-            
-            var documentDtos = uploadResults.Select(x => new DocumentCreateDto
+            var result = await _vehicleService.ChangeVehicleStatusAsync(vehicleId,status);
+            if (result == null)
             {
-                VehicleId = vehicleId,
-                DocumentType = "",
-                FileUrl = x.FileUrl,
-                PublicId = x.PublicId
-            }).ToList();    
-            var results = await _documentService.InsertDocuments(documentDtos);
-            return Ok(uploadResults);
+                return BadRequest("Failed to make vehicle is active.");
+            }
+            return Ok(result);
+        }
+
+        #endregion
+
+        #region filtering by vehicle status
+        [HttpGet("get-by-status")]
+        public async Task<ActionResult> GetVehicleStatus([FromQuery] VehicleStatus vehicleStatus)
+        {
+            var response = await _vehicleService.GetVehicleStatus(vehicleStatus);
+            if (response == null)
+            {
+                return BadRequest("Failed to retrieve vehicle status.");
+            }
+            return Ok(response);
         }
         #endregion
     }

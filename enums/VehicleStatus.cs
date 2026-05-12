@@ -3,8 +3,12 @@
     public enum VehicleStatus
     {
         Active,
-        Inactive,
+        InActive,
         Maintenance,
         Decommissioned
     }
 }
+
+
+//offRoad
+//onRoad

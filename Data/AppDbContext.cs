@@ -11,7 +11,7 @@ namespace LogisticsERP.API.Data
         public DbSet<DutyLogs> DutyLogs { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<FuelRecord> FuelRecords { get; set; }
-        
+        public DbSet<VehicleDocuments> VehicleDocuments { get; set; }
         public DbSet<MaintenanceRecord> MaintenanceRecords { get; set; }
         public DbSet<OvertimeDuty> OvertimeDuties { get; set; }
         public DbSet<Role> UserRole { get; set; }
@@ -44,6 +44,9 @@ namespace LogisticsERP.API.Data
                 .HasConversion<string>();
             modelBuilder.Entity<Expense>()
                 .Property(x => x.ExpenseStatus)
+                .HasConversion<string>();
+            modelBuilder.Entity<DutyLogs>()
+                .Property(x => x.DutyType)
                 .HasConversion<string>();
 
 

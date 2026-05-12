@@ -14,18 +14,19 @@ namespace LogisticsERP.API.Models
         public string Address { get; set; }
         public string LicenseNumber { get; set; }
         public DateTime LicenseExpiry { get; set; }
+        public string? PhotoUrl { get; set; }
         public string typeOfLicence { get; set; }
-        public DateTime DateOfJoining { get; set; }
+        public DateTime DateOfJoining { get; set; } = DateTime.UtcNow;
         public string Salary { get; set; }
-        public DriverStatus Status { get; set; }
-        public string Description { get; set; }
+        public DriverStatus Status { get; set; } = DriverStatus.ACTIVE;
+        public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         //FORIGN KEY TABLE 
         // Navigation property for the related Vehicle
-        // Not nullable, required assignment
-        [ForeignKey("VehicleId")] public string VehicleId { get; set; }
-        public Vehicle Vehicle { get; set; }
+        // Nullable, optional assignment
+        [ForeignKey("VehicleId")] public string? VehicleId { get; set; }
+        public Vehicle? Vehicle { get; set; }
         public ICollection<FuelRecord> FuelRecords { get; set; } = [];
         public ICollection<MaintenanceRecord> MaintenanceRecords { get; set; } = [];
         public ICollection<DutyLogs> DutyLogs { get; set; } = [];

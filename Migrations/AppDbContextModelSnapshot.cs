@@ -42,7 +42,6 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -64,6 +63,9 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("text");
+
                     b.Property<string>("Salary")
                         .IsRequired()
                         .HasColumnType("text");
@@ -73,7 +75,6 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("VehicleId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("typeOfLicence")
@@ -112,6 +113,10 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("DriverId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DutyType")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -532,8 +537,7 @@ namespace LogisticsERP.API.Migrations
                     b.HasOne("LogisticsERP.API.Models.Vehicle", "Vehicle")
                         .WithMany("Drivers")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Vehicle");
                 });

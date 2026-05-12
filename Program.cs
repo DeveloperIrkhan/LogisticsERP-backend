@@ -39,10 +39,14 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped(typeof(IGenericRepo<>), typeof
     (GenericRepo<>));
 builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+// Add repositories to the container
 builder.Services.AddScoped<IVehicleRepo, VehicleRepo>();
+builder.Services.AddScoped<IDriverRepo, DriverRepo>();
+builder.Services.AddScoped<IMaintenanceRepo, MaintenanceRepo>();
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(_mapper => _mapper.AddProfile<MapperProfile>()

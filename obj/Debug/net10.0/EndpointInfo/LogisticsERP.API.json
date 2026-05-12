@@ -6,6 +6,101 @@
     "version": "v1"
   },
   "paths": {
+    "/upload-documents": {
+      "post": {
+        "tags": [
+          "Document"
+        ],
+        "parameters": [
+          {
+            "name": "vehicleId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DocuemntType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "files": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/update-documents": {
+      "post": {
+        "tags": [
+          "Document"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "PublicId": {
+                    "type": "string"
+                  },
+                  "NewFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "DestinationFolderName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "PublicId": {
+                  "style": "form"
+                },
+                "NewFile": {
+                  "style": "form"
+                },
+                "DestinationFolderName": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Driver/get-all-driver": {
       "get": {
         "tags": [
@@ -51,23 +146,155 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/DriverCreateDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DriverCreateDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DriverCreateDto"
+                "type": "object",
+                "properties": {
+                  "FullName": {
+                    "type": "string"
+                  },
+                  "CNIC": {
+                    "type": "string"
+                  },
+                  "MobileNumber": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Address": {
+                    "type": "string"
+                  },
+                  "LicenseNumber": {
+                    "type": "string"
+                  },
+                  "Photo": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "PhotoUrl": {
+                    "type": "string"
+                  },
+                  "LicenseExpiry": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "typeOfLicence": {
+                    "type": "string"
+                  },
+                  "DateOfJoining": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "Salary": {
+                    "type": "string"
+                  },
+                  "Status": {
+                    "$ref": "#/components/schemas/DriverStatus"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "VehicleId": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "FullName": {
+                  "style": "form"
+                },
+                "CNIC": {
+                  "style": "form"
+                },
+                "MobileNumber": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Address": {
+                  "style": "form"
+                },
+                "LicenseNumber": {
+                  "style": "form"
+                },
+                "Photo": {
+                  "style": "form"
+                },
+                "PhotoUrl": {
+                  "style": "form"
+                },
+                "LicenseExpiry": {
+                  "style": "form"
+                },
+                "typeOfLicence": {
+                  "style": "form"
+                },
+                "DateOfJoining": {
+                  "style": "form"
+                },
+                "Salary": {
+                  "style": "form"
+                },
+                "Status": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "VehicleId": {
+                  "style": "form"
+                }
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Driver/assign-driver-to-vehicle": {
+      "post": {
+        "tags": [
+          "Driver"
+        ],
+        "parameters": [
+          {
+            "name": "driverId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vehicleId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -189,17 +416,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
@@ -245,6 +472,44 @@
         }
       }
     },
+    "/api/Vehicle/get-documents-of-vehicle": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Vehicle/get-vehicle-by-id": {
       "get": {
         "tags": [
@@ -253,6 +518,102 @@
         "parameters": [
           {
             "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Vehicle/get-assigned-vehicle-list": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDtoApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDtoApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDtoApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Vehicle/get-unassigned-vehicle-list": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Vehicle/get-assigned-drivers-for-vehicle": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "parameters": [
+          {
+            "name": "vehicleId",
             "in": "query",
             "schema": {
               "type": "string"
@@ -331,6 +692,85 @@
         }
       }
     },
+    "/api/Vehicle/filtering-vehicle": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "parameters": [
+          {
+            "name": "Number",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Company",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Doner",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "InsuredBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "DriverId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/VehicleStatus"
+            }
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Vehicle/expiring": {
       "get": {
         "tags": [
@@ -354,7 +794,7 @@
         }
       }
     },
-    "/api/Vehicle/expiry-driver": {
+    "/api/Vehicle/unassign-driver": {
       "post": {
         "tags": [
           "Vehicle"
@@ -362,13 +802,6 @@
         "parameters": [
           {
             "name": "vehicleId",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "driverId",
             "in": "query",
             "schema": {
               "type": "string"
@@ -403,8 +836,8 @@
         }
       }
     },
-    "/api/Vehicle/upload-documents": {
-      "post": {
+    "/api/Vehicle/change-vehicle-state": {
+      "put": {
         "tags": [
           "Vehicle"
         ],
@@ -415,31 +848,53 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/VehicleStatus"
+            }
           }
         ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  }
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
-              "encoding": {
-                "files": {
-                  "style": "form"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
           }
-        },
+        }
+      }
+    },
+    "/api/Vehicle/get-by-status": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "parameters": [
+          {
+            "name": "vehicleStatus",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/VehicleStatus"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -476,63 +931,6 @@
           "uploadedAt": {
             "type": "string",
             "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DriverCreateDto": {
-        "type": "object",
-        "properties": {
-          "fullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "cnic": {
-            "type": "string",
-            "nullable": true
-          },
-          "mobileNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "address": {
-            "type": "string",
-            "nullable": true
-          },
-          "licenseNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "licenseExpiry": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "typeOfLicence": {
-            "type": "string",
-            "nullable": true
-          },
-          "dateOfJoining": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "salary": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/DriverStatus"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "vehicleId": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -595,13 +993,29 @@
             "type": "string",
             "format": "date-time"
           },
-          "vehicleId": {
+          "photoUrl": {
             "type": "string",
             "nullable": true
           },
-          "vehicleName": {
+          "vehicleId": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DriverResponseDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/DriverResponseDto"
           }
         },
         "additionalProperties": false
@@ -690,10 +1104,6 @@
       "VehicleCreateDto": {
         "type": "object",
         "properties": {
-          "vehicleId": {
-            "type": "string",
-            "nullable": true
-          },
           "number": {
             "type": "string",
             "nullable": true
@@ -747,6 +1157,10 @@
             "nullable": true
           },
           "insuranceFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "insuranceExpiry": {
             "type": "string",
             "format": "date-time"
           },
@@ -959,6 +1373,9 @@
     }
   },
   "tags": [
+    {
+      "name": "Document"
+    },
     {
       "name": "Driver"
     },

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LogisticsERP.API.enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LogisticsERP.API.Models
@@ -7,12 +8,12 @@ namespace LogisticsERP.API.Models
     {
         [Key] 
         public string DutyId { get; set; } = $"PRCS-DUTY-{Guid.NewGuid()}";
-        [ForeignKey("VehicleId")]
         public string VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
         [ForeignKey("DriverId")]
         public string DriverId { get; set; }
         public Driver Driver { get; set; }
+        public DutyType DutyType { get; set; } = DutyType.Routine;
         public string FromLocation { get; set; }
         public string ToLocation { get; set; }
         public DateTime DateOut { get; set; }
