@@ -54,12 +54,12 @@ namespace LogisticsERP.API.Services
                     Message = "Driver is already assigned to this vehicle"
                 };
             }
-            if(await _vehRepo.IsVehicleActive(vehicleId))
+            if(!await _vehRepo.IsVehicleActive(vehicleId))
             {
                 return new ApiResponse<DriverResponseDto>
                 {
                     Success = false,
-                    Message = "vehicle is inActive for now"
+                    Message = "vehicle is not active for now"
                 };
 
             }
@@ -101,16 +101,33 @@ namespace LogisticsERP.API.Services
             return _mapper.Map<List<DriverResponseDto>>(driversList);
         }
 
-        public async Task<DriverResponseDto> CreateDriver(DriverCreateDto driver)
+        public async Task<DriverResponseDto> CreateDriver(DriverCreateDto driver, string? PhotoUrl, string? LicenseUrl)
         {
             if (driver == null)
             {
                 throw new Exception("vehicle should not be empty!");
             }
-            var newDriver = _mapper.Map<Driver>(driver);
-            await _driverGenRepo.AddAsync(newDriver);
+            Driver creatingDriver = new Driver
+            {
+                FullName = driver.FullName,
+                CNIC = driver.CNIC,
+                MobileNumber = driver.MobileNumber,
+                Email = driver.Email,
+                Address = driver.Address,
+                LicenseNumber = driver.LicenseNumber,
+                PhotoUrl = PhotoUrl,
+                LicenseUrl = LicenseUrl,
+                LicenseExpiry = driver.LicenseExpiry,
+                typeOfLicence = driver.TypeOfLicence,
+                DateOfJoining = driver.DateOfJoining,
+                Salary = driver.Salary,
+                Status = driver.Status,
+                Description = driver.Description,
+                VehicleId = driver.VehicleId
+            };
+            await _driverGenRepo.AddAsync(creatingDriver);
             await _context.SaveChangesAsync();
-            return _mapper.Map<DriverResponseDto>(newDriver);
+            return _mapper.Map<DriverResponseDto>(creatingDriver);
         }
 
         public Task DeleteVehicle(string id)
@@ -136,9 +153,10 @@ namespace LogisticsERP.API.Services
             return _mapper.Map<IEnumerable<DriverResponseDto>>(result);
         }
 
-        public Task<DriverResponseDto> GetDriverById(string id)
+        public  async Task<DriverResponseDto> GetDriverById(string id)
         {
-            throw new NotImplementedException();
+            var driver = await _driverGenRepo.GetByIdAsync(id);
+            return _mapper.Map<DriverResponseDto>(driver);
         }
 
         public Task<DriverResponseDto> UpdateDriver(DriverUpdateDto vehicle)

@@ -10,7 +10,7 @@ namespace LogisticsERP.API.DTOs.Vehicle
             public string? InsuredBy { get; set; }
             public string? DriverId { get; set; }
             public VehicleStatus? Status { get; set; }
-            public string? Type { get; set; }
+            public string? VehicleType { get; set; }
             public DateTime? FromDate { get; set; }
             public DateTime? ToDate { get; set; }
     }

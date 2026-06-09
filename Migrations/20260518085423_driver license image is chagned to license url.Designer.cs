@@ -3,6 +3,7 @@ using System;
 using LogisticsERP.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LogisticsERP.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518085423_driver license image is chagned to license url")]
+    partial class driverlicenseimageischagnedtolicenseurl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,6 +186,7 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ExpenseType")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Notes")
@@ -252,9 +256,8 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("StationName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<decimal>("StationName")
+                        .HasColumnType("numeric");
 
                     b.Property<decimal>("TotalCost")
                         .HasColumnType("numeric");
@@ -281,11 +284,11 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ChangedParts")
-                        .HasColumnType("text");
-
                     b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("CurrentKm")
                         .HasColumnType("numeric");
@@ -297,14 +300,8 @@ namespace LogisticsERP.API.Migrations
                     b.Property<string>("DriverId")
                         .HasColumnType("text");
 
-                    b.Property<string>("InvoiceNumber")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("MaintenanceDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("MaintenanceType")
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("NextMaintenanceDate")
                         .HasColumnType("timestamp with time zone");
@@ -312,14 +309,14 @@ namespace LogisticsERP.API.Migrations
                     b.Property<decimal?>("NextMaintenanceKm")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime>("NextServiceDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.Property<string>("VehicleId")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("WorkshopName")
                         .HasColumnType("text");
 
                     b.HasKey("MaintenanceRecordId");

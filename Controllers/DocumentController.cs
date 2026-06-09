@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogisticsERP.API.Controllers
 {
-    public class DocumentController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DocumentController : ControllerBase
     {
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IDocumentService _documentService;

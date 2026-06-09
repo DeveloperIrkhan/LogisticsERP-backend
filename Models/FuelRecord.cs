@@ -21,7 +21,7 @@ namespace LogisticsERP.API.Models
         public decimal CostPerLiter { get; set; }
         public int? Mileage { get; set; }
         public decimal TotalCost { get; set; }  
-        public decimal StationName { get; set; }
+        public string StationName { get; set; }
         public string StationLocation { get; set; }
         public string ReceiptNumber { get; set; }   
         public string Donor { get; set; }

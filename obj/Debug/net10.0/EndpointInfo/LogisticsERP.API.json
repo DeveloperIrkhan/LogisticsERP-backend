@@ -6,7 +6,7 @@
     "version": "v1"
   },
   "paths": {
-    "/upload-documents": {
+    "/api/Document/upload-documents": {
       "post": {
         "tags": [
           "Document"
@@ -57,7 +57,7 @@
         }
       }
     },
-    "/update-documents": {
+    "/api/Document/update-documents": {
       "post": {
         "tags": [
           "Document"
@@ -172,14 +172,15 @@
                     "type": "string",
                     "format": "binary"
                   },
-                  "PhotoUrl": {
-                    "type": "string"
+                  "License": {
+                    "type": "string",
+                    "format": "binary"
                   },
                   "LicenseExpiry": {
                     "type": "string",
                     "format": "date-time"
                   },
-                  "typeOfLicence": {
+                  "TypeOfLicence": {
                     "type": "string"
                   },
                   "DateOfJoining": {
@@ -222,13 +223,13 @@
                 "Photo": {
                   "style": "form"
                 },
-                "PhotoUrl": {
+                "License": {
                   "style": "form"
                 },
                 "LicenseExpiry": {
                   "style": "form"
                 },
-                "typeOfLicence": {
+                "TypeOfLicence": {
                   "style": "form"
                 },
                 "DateOfJoining": {
@@ -267,6 +268,45 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DriverResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Driver/get-driver-by-id/{id}": {
+      "get": {
+        "tags": [
+          "Driver"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
@@ -315,6 +355,317 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Maintenance/add-maintenance": {
+      "post": {
+        "tags": [
+          "Maintenance"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceCreateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceCreateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceCreateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCreateDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCreateDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCreateDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Maintenance/update-maintenance/{id}": {
+      "put": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceUpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceUpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaintenanceUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCreateDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCreateDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaintenanceCreateDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Maintenance/get-maintenance/{id}": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/get-all-maintenance": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/delete-maintenance/{id}": {
+      "delete": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/get-by-vehicle/{vehicleId}": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/get-by-date-range": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/cost/vehicle/{vehicleId}": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/cost/monthly": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/cost/yearly": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Maintenance/upcoming": {
+      "get": {
+        "tags": [
+          "Maintenance"
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -368,17 +719,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
@@ -434,7 +785,7 @@
         }
       }
     },
-    "/api/Vehicle/get-full-record-of-vehicleId": {
+    "/api/Vehicle/get-full-record-of-vehicleId/{id}": {
       "get": {
         "tags": [
           "Vehicle"
@@ -442,7 +793,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -472,7 +824,7 @@
         }
       }
     },
-    "/api/Vehicle/get-documents-of-vehicle": {
+    "/api/Vehicle/get-documents-of-vehicle/{id}": {
       "get": {
         "tags": [
           "Vehicle"
@@ -480,7 +832,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -510,7 +863,7 @@
         }
       }
     },
-    "/api/Vehicle/get-vehicle-by-id": {
+    "/api/Vehicle/get-vehicle-by-id/{id}": {
       "get": {
         "tags": [
           "Vehicle"
@@ -518,7 +871,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -530,17 +884,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
@@ -559,17 +913,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDtoApiResponse"
+                  "$ref": "#/components/schemas/VehicleResponseDtoApiResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDtoApiResponse"
+                  "$ref": "#/components/schemas/VehicleResponseDtoApiResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDtoApiResponse"
+                  "$ref": "#/components/schemas/VehicleResponseDtoApiResponse"
                 }
               }
             }
@@ -588,17 +942,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
@@ -626,17 +980,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
@@ -674,17 +1028,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DriverResponseDto"
+                  "$ref": "#/components/schemas/VehicleResponseDto"
                 }
               }
             }
@@ -741,7 +1095,7 @@
             }
           },
           {
-            "name": "Type",
+            "name": "VehicleType",
             "in": "query",
             "schema": {
               "type": "string"
@@ -997,25 +1351,13 @@
             "type": "string",
             "nullable": true
           },
+          "licenseUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "vehicleId": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "DriverResponseDtoApiResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "data": {
-            "$ref": "#/components/schemas/DriverResponseDto"
           }
         },
         "additionalProperties": false
@@ -1027,6 +1369,113 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "MaintenanceCreateDto": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "string",
+            "nullable": true
+          },
+          "addedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "maintenanceDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "currentKm": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "maintenanceType": {
+            "type": "string",
+            "nullable": true
+          },
+          "workshopName": {
+            "type": "string",
+            "nullable": true
+          },
+          "changedParts": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "nextMaintenanceKm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "nextMaintenanceDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MaintenanceUpdateDto": {
+        "type": "object",
+        "properties": {
+          "maintenanceDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "currentKm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "maintenanceType": {
+            "type": "string",
+            "nullable": true
+          },
+          "workshopName": {
+            "type": "string",
+            "nullable": true
+          },
+          "changedParts": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoiceNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "nextMaintenanceKm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "nextMaintenanceDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "Role": {
         "type": "object",
@@ -1116,7 +1565,7 @@
             "type": "string",
             "nullable": true
           },
-          "enginNumber": {
+          "engineNumber": {
             "type": "string",
             "nullable": true
           },
@@ -1124,7 +1573,7 @@
             "type": "string",
             "nullable": true
           },
-          "type": {
+          "vehicleType": {
             "type": "string",
             "nullable": true
           },
@@ -1197,7 +1646,7 @@
             "type": "string",
             "nullable": true
           },
-          "enginNumber": {
+          "engineNumber": {
             "type": "string",
             "nullable": true
           },
@@ -1205,7 +1654,7 @@
             "type": "string",
             "nullable": true
           },
-          "type": {
+          "vehicleType": {
             "type": "string",
             "nullable": true
           },
@@ -1273,6 +1722,22 @@
         },
         "additionalProperties": false
       },
+      "VehicleResponseDtoApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/VehicleResponseDto"
+          }
+        },
+        "additionalProperties": false
+      },
       "VehicleStatus": {
         "enum": [
           0,
@@ -1305,7 +1770,7 @@
             "type": "string",
             "nullable": true
           },
-          "enginNumber": {
+          "engineNumber": {
             "type": "string",
             "nullable": true
           },
@@ -1313,7 +1778,7 @@
             "type": "string",
             "nullable": true
           },
-          "type": {
+          "vehicleType": {
             "type": "string",
             "nullable": true
           },
@@ -1378,6 +1843,9 @@
     },
     {
       "name": "Driver"
+    },
+    {
+      "name": "Maintenance"
     },
     {
       "name": "User"

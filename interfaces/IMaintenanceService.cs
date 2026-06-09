@@ -9,11 +9,11 @@ namespace LogisticsERP.API.interfaces
         // CRUD OPERATIONS
         // =========================
 
-        Task<ApiResponse<MaintenanceResponseDto>> CreateAsync(MaintenanceCreateDto maintenanceRequestDto);
-        Task<ApiResponse<MaintenanceResponseDto>> UpdateMaintenanceRecordAsync(string MaintenanceRecordId, MaintenanceUpdateDto maintenanceUpdateDto);
-        Task<ApiResponse<MaintenanceResponseDto>> GetMaintenanceRecordById(string MaintenanceRecordId);
-        Task<ApiResponse<MaintenanceResponseDto>> GetAllMaintenanceRecordAsync();
-        Task<bool> DeleteMaintenanceRecordByIdAsync(string MaintenanceRecordId);
+        Task<ApiResponse<MaintenanceResponseDto>> CreateAsync(MaintenanceCreateDto dto);
+        Task<ApiResponse<MaintenanceResponseDto>> UpdateAsync(string MaintenanceRecordId, MaintenanceUpdateDto dto);
+        Task<ApiResponse<MaintenanceResponseDto>> GetByIdAsync(string MaintenanceRecordId);
+        Task<ApiResponse<List<MaintenanceResponseDto>>> GetAllAsync();
+        Task<ApiResponse<bool>> DeleteAsync(string MaintenanceRecordId);
 
         // =========================
         // VEHICLE-BASED QUERIES
@@ -23,17 +23,15 @@ namespace LogisticsERP.API.interfaces
         // =========================
         // HISTORY & FILTERING
         // =========================
-        Task<ApiResponse<List<MaintenanceResponseDto>>> GetVehicleHistoryAsync(string VehicleId);
-
         Task<ApiResponse<List<MaintenanceResponseDto>>> GetByDateRangeAsync(DateTime from, DateTime to);
 
         // =========================
         //  COST TRACKING
         // =========================
 
-        Task<ApiResponse<decimal>> GetTotalCostByVehicleAsync(string vehicleId);
-        Task<ApiResponse<decimal>> GetMonthlyCostAsync(int year, int month);
-        Task<ApiResponse<decimal>> GetYearlyCostAsync(int year);
+        Task<ApiResponse<MaintenanceCostReportDto>> GetTotalCostByVehicleAsync(string vehicleId);
+        Task<ApiResponse<MaintenanceCostReportDto>> GetMonthlyCostAsync(int year, int month);
+        Task<ApiResponse<MaintenanceCostReportDto>> GetYearlyCostAsync(int year);
 
         // =========================
         // ALERTS / UPCOMING SERVICES

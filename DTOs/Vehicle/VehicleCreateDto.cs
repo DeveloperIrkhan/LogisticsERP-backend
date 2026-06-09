@@ -8,9 +8,9 @@ namespace LogisticsERP.API.DTOs.Vehicle
         public string Number { get; set; }
         public string ModelName { get; set; }
         public string Company { get; set; }
-        public string EnginNumber { get; set; }
+        public string EngineNumber { get; set; }
         public string ChassisNumber { get; set; }
-        public string Type { get; set; }
+        public string VehicleType { get; set; }
         public string Doner { get; set; }
         public decimal PurchsedCast { get; set; } 
         public decimal Depreciation { get; set; }

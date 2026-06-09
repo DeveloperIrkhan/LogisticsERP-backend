@@ -1,4 +1,5 @@
-﻿using LogisticsERP.API.enums;
+﻿using LogisticsERP.API.DTOs.Vehicle;
+using LogisticsERP.API.enums;
 using LogisticsERP.API.Models;
 
 namespace LogisticsERP.API.DTOs.Drivers
@@ -19,9 +20,9 @@ namespace LogisticsERP.API.DTOs.Drivers
         public DriverStatus Status { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string PhotoUrl { get; set; }
-        public string? VehicleId { get; set; }
+        public string? PhotoUrl { get; set; }
+        public string? LicenseUrl { get; set; }
 
-        // Optional: include vehicle basic info
+        public string? VehicleId { get; set; }
     }
 }

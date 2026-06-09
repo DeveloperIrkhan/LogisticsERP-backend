@@ -25,7 +25,7 @@ namespace LogisticsERP.API.Controllers
 
         #region Getting All Vehicals
         [HttpGet("get-all-vehicle")]
-        public async Task<ActionResult<DriverResponseDto>> GetAllVehicle()
+        public async Task<ActionResult<VehicleResponseDto>> GetAllVehicle()
         {
             var vehicles = await _vehicleService.GetAllVehicles();
             if (vehicles == null)
@@ -52,7 +52,7 @@ namespace LogisticsERP.API.Controllers
         #endregion
 
         #region Getting full record of vehicle using vehicleId
-        [HttpGet("get-full-record-of-vehicleId")]
+        [HttpGet("get-full-record-of-vehicleId/{id}")]
         public async Task<ActionResult<VehicleResponseDto>> GetFullRecordOdVehicleById(string id)
         {
             var vehicle = await _vehicleService.GetFullRecordByVehicleById(id);
@@ -65,7 +65,7 @@ namespace LogisticsERP.API.Controllers
         #endregion
 
         #region Getting vehicle documents of vehicle by Id
-        [HttpGet("get-documents-of-vehicle")]
+        [HttpGet("get-documents-of-vehicle/{id}")]
         public async Task<ActionResult<VehicleResponseDto>> GetDocumentOfVehicleById(string id)
         {
             var vehicle = await _vehicleService.GetDocumentOfVehicleById(id);
@@ -74,8 +74,8 @@ namespace LogisticsERP.API.Controllers
         #endregion
 
         #region Getting only vehicle by Id
-        [HttpGet("get-vehicle-by-id")]
-        public async Task<ActionResult<DriverResponseDto>> GetVehicleById(string id)
+        [HttpGet("get-vehicle-by-id/{id}")]
+        public async Task<ActionResult<VehicleResponseDto>> GetVehicleById(string id)
         {
             var vehicle = await _vehicleService.GetVehicleById(id);
             if (vehicle == null)
@@ -88,12 +88,12 @@ namespace LogisticsERP.API.Controllers
 
         #region Getting only Assigned vehicles
         [HttpGet("get-assigned-vehicle-list")]
-        public async Task<ActionResult<ApiResponse<DriverResponseDto>>> GetAssignedVehicleList()
+        public async Task<ActionResult<ApiResponse<VehicleResponseDto>>> GetAssignedVehicleList()
         {
             var vehicle = await _vehicleService.GetAssignedVehicleList(VehicleStatus.Active);
             if (vehicle == null)
             {
-                return new ApiResponse<DriverResponseDto>
+                return new ApiResponse<VehicleResponseDto>
                 {
                     Success = false,
                     Message = "No assigned vehicles found."
@@ -105,7 +105,7 @@ namespace LogisticsERP.API.Controllers
 
         #region Getting only Unassigned vehicles
         [HttpGet("get-unassigned-vehicle-list")]
-        public async Task<ActionResult<DriverResponseDto>> GetUnAssignedVehicleList()
+        public async Task<ActionResult<VehicleResponseDto>> GetUnAssignedVehicleList()
         {
             var vehicle = await _vehicleService.GetUnAssignedVehicleList(VehicleStatus.InActive);
             if (vehicle == null)
@@ -118,7 +118,7 @@ namespace LogisticsERP.API.Controllers
 
         #region specfic vehicle Assigned driver list
         [HttpGet("get-assigned-drivers-for-vehicle")]
-        public async Task<ActionResult<DriverResponseDto>> GerDriverListForSpecficVehicle(string vehicleId)
+        public async Task<ActionResult<VehicleResponseDto>> GerDriverListForSpecficVehicle(string vehicleId)
         {
             var response = await _driverService.GetAssignedDriversListForSignleVehicle(vehicleId);
             return Ok(response);
@@ -127,7 +127,7 @@ namespace LogisticsERP.API.Controllers
 
         #region Updating Vehicle
         [HttpPut("update-vehicle")]
-        public async Task<ActionResult<DriverResponseDto>> UpdateVehicle([FromBody] VehicleUpdateDto dto)
+        public async Task<ActionResult<VehicleResponseDto>> UpdateVehicle([FromBody] VehicleUpdateDto dto)
         {
             //ArgumentNullException.ThrowIfNull(id, nameof(id));
             if (dto == null)

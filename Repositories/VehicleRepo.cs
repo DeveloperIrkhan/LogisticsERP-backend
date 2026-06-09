@@ -74,8 +74,8 @@ namespace LogisticsERP.API.Repositories
             if (!string.IsNullOrEmpty(filter.Company))
                 query = query.Where(x => x.Company.Contains(filter.Company));
 
-            if (!string.IsNullOrEmpty(filter.Type))
-                query = query.Where(x => x.Type == filter.Type);
+            if (!string.IsNullOrEmpty(filter.VehicleType))
+                query = query.Where(x => x.VehicleType == filter.VehicleType);
 
             if (filter.Status.HasValue)
                 query = query.Where(x => x.Status == filter.Status);

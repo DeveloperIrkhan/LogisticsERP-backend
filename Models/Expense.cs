@@ -13,7 +13,7 @@ namespace LogisticsERP.API.Models
         [Required]
         public decimal Amount { set; get; }
         public DateTime ExpenseDate { set; get; }
-        public ExpenseType ExpenseType { set; get; }
+        public string? ExpenseType { set; get; }
         public PaymentMode PaymentMode { get; set; }
         public ExpenseStatus ExpenseStatus { set; get; }
         public string Notes { set; get; }

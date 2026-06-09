@@ -9,22 +9,32 @@ namespace LogisticsERP.API.Models
     {
         [Key]
         public string MaintenanceRecordId { get; set; } = $"PRCS-MEN-{Guid.NewGuid()}";
-        [ForeignKey("VehicleId")]
-        public string VehicleId { get; set; }
-        public Vehicle Vehicle { get; set; }
         //ServiceDate
-        public DateTime MaintenanceDate { get; set; }
         public decimal CurrentKm { get; set; }
-        public decimal? NextMaintenanceKm { get; set; }
-        public DateTime? NextMaintenanceDate { get; set; }
+        public string? MaintenanceType { get; set; }
+        public string? WorkshopName { get; set; }
+        public string? ChangedParts { get; set; }
+        public string? InvoiceNumber { get; set; }
+
 
         public string Description { get; set; }
+        public decimal? NextMaintenanceKm { get; set; }
         public decimal Cost { get; set; }
-        public DateTime NextServiceDate { get; set; }
+        public DateTime MaintenanceDate { get; set; }
+        public DateTime? NextMaintenanceDate { get; set; }
+
+
+
+        //relationships
+
         [ForeignKey("UserId")]
         public string AddedBy { get; set; }
         public User User { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+
+        [ForeignKey("VehicleId")]
+        public string VehicleId { get; set; }
+        public Vehicle Vehicle { get; set; }
     }
 }
 

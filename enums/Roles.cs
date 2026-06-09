@@ -1,7 +1,8 @@
 ﻿namespace LogisticsERP.API.enums
 {
-    public enum ExpenseType
+    public enum Roles
     {
-        Fuel = 0, Maintenance, Salary, Overtime, Misc
+        Admin=1, 
+        User, 
     }
 }

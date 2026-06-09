@@ -5,6 +5,7 @@ namespace LogisticsERP.API.DTOs.Drivers
 {
     public class DriverUpdateDto
     {
+        public string DriverId { get; set; }
         public string FullName { get; set; }
         public string CNIC { get; set; }
         public string MobileNumber { get; set; }
@@ -15,6 +16,8 @@ namespace LogisticsERP.API.DTOs.Drivers
         public string TypeOfLicence { get; set; }
         public DateTime DateOfJoining { get; set; }
         public string Salary { get; set; }
+        public IFormFile? PhotoUrl { get; set; }
+        public IFormFile? LicenseImage { get; set; }
         public DriverStatus Status { get; set; }
         public string Description { get; set; }
 

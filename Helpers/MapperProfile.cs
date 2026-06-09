@@ -27,20 +27,17 @@ namespace LogisticsERP.API.Helpers
             CreateMap<DriverCreateDto, Driver>();
             CreateMap<DriverUpdateDto, Driver>();
 
+
             //mapping VehicleDocuments to Dtos
             CreateMap<DocumentCreateDto, VehicleDocuments>();
             CreateMap<VehicleDocuments, DocumentResponseDto>();
 
             //mapping Maintenance to Dtos
-            CreateMap<MaintenanceRecord, MaintenanceResponseDto>();
             CreateMap<MaintenanceCreateDto, MaintenanceRecord>();
-            CreateMap<MaintenanceUpdateDto, MaintenanceRecord>();
-            CreateMap<MaintenanceRecord, MaintenanceSummaryDto>().ReverseMap();
-
-
-
-
-
+            CreateMap<MaintenanceUpdateDto, MaintenanceRecord>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<MaintenanceRecord, MaintenanceResponseDto>();
+            CreateMap<MaintenanceRecord, MaintenanceSummaryDto>();
         }
     }
 }

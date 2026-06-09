@@ -9,7 +9,7 @@ namespace LogisticsERP.API.interfaces
         public Task<ApiResponse<DriverResponseDto>> AssignDriver(string driverId, string vehicleId);
         public Task<List<DriverResponseDto>> DriverListAssignedToSpecficVehicle(string vehicleId);
 
-        Task<DriverResponseDto> CreateDriver(DriverCreateDto driver);
+        Task<DriverResponseDto> CreateDriver(DriverCreateDto driver, string? PhotoUrl,string? LicenseUrl);
         Task<DriverResponseDto> UpdateDriver(DriverUpdateDto driver);
         Task DeleteVehicle(string id);
         Task<DriverResponseDto> GetDriverById(string id);
