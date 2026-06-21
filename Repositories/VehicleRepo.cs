@@ -21,7 +21,7 @@ namespace LogisticsERP.API.Repositories
             _mapper = mapper;
         }
 
-        public async Task<List<VehicleResponseDto>> GetAssignedVehicleList(VehicleStatus Status)
+        public async Task<List<Vehicle>> GetAssignedVehicleList(VehicleStatus Status)
         {
             //if (!Enum.TryParse<VehicleStatus>(Status, true, out var parsedStatus))
             //    throw new Exception("Invalid status");
@@ -32,10 +32,10 @@ namespace LogisticsERP.API.Repositories
                 .Where(x => x.Status == Status)
                 .ToListAsync();
 
-            return _mapper.Map<List<VehicleResponseDto>>(result);
+            return result;
         }
 
-        public async Task<List<VehicleResponseDto>> GetUnAssignedVehicleList(VehicleStatus Status)
+        public async Task<List<Vehicle>> GetUnAssignedVehicleList(VehicleStatus Status)
         {
 
             var result = await _context.Vehicles
@@ -44,11 +44,11 @@ namespace LogisticsERP.API.Repositories
                 .Where(x => x.Status == Status)
                 .ToListAsync();
 
-            return _mapper.Map<List<VehicleResponseDto>>(result);
+            return result;
         }
 
 
-        public async Task<List<VehicleResponseDto>> GetVehicles(VehicleFilterDto filter)
+        public async Task<List<Vehicle>> GetVehicles(VehicleFilterDto filter)
         {
 
             var query = _context.Vehicles
@@ -87,11 +87,11 @@ namespace LogisticsERP.API.Repositories
                 query = query.Where(x => x.RegistrationDate <= filter.FromDate);
 
             var result = await query.ToListAsync();
-            return _mapper.Map<List<VehicleResponseDto>>(result);
+            return result;
 
         }
 
-        public async Task<VehicleResponseDto> GetVehicleById(string vehicleId)
+        public async Task<Vehicle> GetVehicleById(string vehicleId)
         {
             var result = await _context.Vehicles
                 .Include(x => x.Drivers)
@@ -100,7 +100,7 @@ namespace LogisticsERP.API.Repositories
 
             if (result == null)
                 throw new Exception("Vehicle not found");
-            return _mapper.Map<VehicleResponseDto>(result);
+            return result;
         }
 
         public async Task<bool> IsDriverAlreadyAssignedToAnotherVehicle(string vehicleId, string driverId)
@@ -120,55 +120,27 @@ namespace LogisticsERP.API.Repositories
             return await _context.Vehicles.AnyAsync(v => v.VehicleId == vehicleId && v.Status == VehicleStatus.Active);
         }
 
-        public async Task<ApiResponse<VehicleResponseDto>> ChangeStatusOfVehicle(string vehicleId, VehicleStatus status)
+        public async Task<Vehicle?> ChangeStatusOfVehicle(string vehicleId, VehicleStatus status)
         {
             var vehicle = await _context.Vehicles.FirstOrDefaultAsync(x=> x.VehicleId ==vehicleId);
-            if (vehicle == null) return new ApiResponse<VehicleResponseDto>()
-            {
-                Message = "vehicle on giving ID not found",
-                Data = null,
-                Success = false
-            };
-
-            vehicle.Status = status;
-            await _context.SaveChangesAsync();
-            return new ApiResponse<VehicleResponseDto>
-            {
-                Success = true,
-                Message = "Vehicle status updated successfully",
-                Data = _mapper.Map<VehicleResponseDto>(vehicle)
-            };
+            vehicle?.Status = status;
+            return vehicle;
 
         }
-
-        public async Task<ApiResponse<VehicleResponseDto>> GetDocumentOfVehicleById(string vehicleId)
+        public async Task<Vehicle?> GetDocumentOfVehicleById(string vehicleId)
         {
-            var result = await _context.Vehicles
+            return await _context.Vehicles
+                .Where(x=> x.VehicleId == vehicleId)
                 .Include(x => x.Documents)
-                .FirstOrDefaultAsync(x => x.VehicleId == vehicleId);
+                .OrderByDescending(x=> x.RegistrationDate)
+                .FirstOrDefaultAsync();
 
-            if (result == null)
-            {
-                return new ApiResponse<VehicleResponseDto>
-                {
-                    Success = false,
-                    Message = "Vehicle not found",
-                    Data = null
-                };
-
-            }
-            return new ApiResponse<VehicleResponseDto>
-            {
-                Success = true,
-                Message = "Vehicle found",
-                Data = _mapper.Map<VehicleResponseDto>(result)
-            };
         }
 
-        public async Task<IEnumerable<VehicleResponseDto>> GetVehicleStatusAsync(VehicleStatus vehicleStatus)
+        public async Task<IEnumerable<Vehicle>> GetVehicleStatusAsync(VehicleStatus vehicleStatus)
         {
             var result = await _context.Vehicles.Where(x => x.Status == vehicleStatus).ToListAsync();
-            return _mapper.Map<IEnumerable<VehicleResponseDto>>(result);
+            return result;
         }
     }
 }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LogisticsERP.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260430142728_Driver photoUrl is added")]
-    partial class DriverphotoUrlisadded
+    [Migration("20260616065439_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,9 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("LicenseUrl")
+                        .HasColumnType("text");
+
                     b.Property<string>("MobileNumber")
                         .IsRequired()
                         .HasColumnType("text");
@@ -96,16 +99,19 @@ namespace LogisticsERP.API.Migrations
                     b.Property<string>("DutyId")
                         .HasColumnType("text");
 
-                    b.Property<int?>("ApprovedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ApprovedByUserUserId")
+                    b.Property<string>("ApprovedBy")
                         .HasColumnType("text");
+
+                    b.Property<string>("CancellationReason")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("DateIn")
+                    b.Property<DateTime>("DateIn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateOut")
@@ -116,6 +122,10 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("DriverId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DutyType")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -137,6 +147,13 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Remarks")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ToLocation")
                         .IsRequired()
                         .HasColumnType("text");
@@ -144,19 +161,136 @@ namespace LogisticsERP.API.Migrations
                     b.Property<decimal?>("TotalHours")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal?>("TotalKm")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
                     b.Property<string>("VehicleId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("DutyId");
 
-                    b.HasIndex("ApprovedByUserUserId");
-
                     b.HasIndex("DriverId");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("VehicleId");
 
                     b.ToTable("DutyLogs");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.DutyRoster", b =>
+                {
+                    b.Property<string>("RosterId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RosterId");
+
+                    b.ToTable("DutyRosters");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.DutyRosterEntry", b =>
+                {
+                    b.Property<string>("EntryId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Donor")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DriverId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DutyDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("DutyLogId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DutyType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FromLocation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OfficerName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Purpose")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RosterId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<TimeSpan>("ShiftEnd")
+                        .HasColumnType("interval");
+
+                    b.Property<TimeSpan>("ShiftStart")
+                        .HasColumnType("interval");
+
+                    b.Property<string>("ShiftType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ToLocation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("VehicleId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("EntryId");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("DutyLogId");
+
+                    b.HasIndex("RosterId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("DutyRosterEntries");
                 });
 
             modelBuilder.Entity("LogisticsERP.API.Models.Expense", b =>
@@ -167,8 +301,18 @@ namespace LogisticsERP.API.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ExpenseCategory")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("ExpenseDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ExpenseName")
                         .IsRequired()
@@ -178,16 +322,14 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ExpenseType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PaymentMode")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReceiptNumber")
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
@@ -211,6 +353,9 @@ namespace LogisticsERP.API.Migrations
                     b.Property<string>("FuelId")
                         .HasColumnType("text");
 
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("CostPerLiter")
                         .HasColumnType("numeric");
 
@@ -218,15 +363,20 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Donor")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("DriverId")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("FuelType")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("FuelingDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsFullTank")
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("Liters")
                         .HasColumnType("numeric");
@@ -235,22 +385,26 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("OdoMeterReading")
                         .HasColumnType("integer");
 
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("text");
+
                     b.Property<string>("ReceiptNumber")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("StationLocation")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("StationName")
-                        .HasColumnType("numeric");
+                    b.Property<string>("StationName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("TotalCost")
                         .HasColumnType("numeric");
@@ -274,14 +428,13 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("AddedBy")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ChangedParts")
                         .HasColumnType("text");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("numeric");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("CurrentKm")
                         .HasColumnType("numeric");
@@ -293,23 +446,32 @@ namespace LogisticsERP.API.Migrations
                     b.Property<string>("DriverId")
                         .HasColumnType("text");
 
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("MaintenanceDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MaintenanceType")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("NextMaintenanceDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("NextMaintenanceFor")
+                        .HasColumnType("text");
+
                     b.Property<decimal?>("NextMaintenanceKm")
                         .HasColumnType("numeric");
-
-                    b.Property<DateTime>("NextServiceDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.Property<string>("VehicleId")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("WorkshopName")
                         .HasColumnType("text");
 
                     b.HasKey("MaintenanceRecordId");
@@ -328,10 +490,8 @@ namespace LogisticsERP.API.Migrations
                     b.Property<string>("OvertimeDutyId")
                         .HasColumnType("text");
 
-                    b.Property<int>("ApprovedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ApprovedByUserUserId")
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
@@ -353,19 +513,32 @@ namespace LogisticsERP.API.Migrations
                     b.Property<decimal>("Hours")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("RatePerHour")
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("RatePerHour")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TotalAmount")
+                    b.Property<string>("Reason")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("TotalAmount")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.HasKey("OvertimeDutyId");
-
-                    b.HasIndex("ApprovedByUserUserId");
 
                     b.HasIndex("DriverId");
 
                     b.HasIndex("DutyLogDutyId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("OvertimeDuties");
                 });
@@ -447,21 +620,21 @@ namespace LogisticsERP.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("EnginNumber")
+                    b.Property<string>("EngineNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("FitnessExpiry")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("InsuranceExpiry")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("InsuranceFrom")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("InsuranceTo")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("InsuredBy")
                         .IsRequired()
@@ -479,20 +652,20 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("RegistrationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("RegistrationExpiry")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("TypeOfInsurance")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("TypeOfInsurance")
+                    b.Property<string>("VehicleType")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -518,7 +691,7 @@ namespace LogisticsERP.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("VehicleId")
                         .IsRequired()
@@ -543,15 +716,15 @@ namespace LogisticsERP.API.Migrations
 
             modelBuilder.Entity("LogisticsERP.API.Models.DutyLogs", b =>
                 {
-                    b.HasOne("LogisticsERP.API.Models.User", "ApprovedByUser")
-                        .WithMany()
-                        .HasForeignKey("ApprovedByUserUserId");
-
                     b.HasOne("LogisticsERP.API.Models.Driver", "Driver")
                         .WithMany("DutyLogs")
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("LogisticsERP.API.Models.User", "ApprovedByUser")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.HasOne("LogisticsERP.API.Models.Vehicle", "Vehicle")
                         .WithMany("DutyLogs")
@@ -562,6 +735,39 @@ namespace LogisticsERP.API.Migrations
                     b.Navigation("ApprovedByUser");
 
                     b.Navigation("Driver");
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.DutyRosterEntry", b =>
+                {
+                    b.HasOne("LogisticsERP.API.Models.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LogisticsERP.API.Models.DutyLogs", "DutyLog")
+                        .WithMany()
+                        .HasForeignKey("DutyLogId");
+
+                    b.HasOne("LogisticsERP.API.Models.DutyRoster", "Roster")
+                        .WithMany("Entries")
+                        .HasForeignKey("RosterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LogisticsERP.API.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Driver");
+
+                    b.Navigation("DutyLog");
+
+                    b.Navigation("Roster");
 
                     b.Navigation("Vehicle");
                 });
@@ -604,7 +810,7 @@ namespace LogisticsERP.API.Migrations
 
             modelBuilder.Entity("LogisticsERP.API.Models.MaintenanceRecord", b =>
                 {
-                    b.HasOne("LogisticsERP.API.Models.Driver", null)
+                    b.HasOne("LogisticsERP.API.Models.Driver", "Driver")
                         .WithMany("MaintenanceRecords")
                         .HasForeignKey("DriverId");
 
@@ -618,6 +824,8 @@ namespace LogisticsERP.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Driver");
+
                     b.Navigation("User");
 
                     b.Navigation("Vehicle");
@@ -625,10 +833,6 @@ namespace LogisticsERP.API.Migrations
 
             modelBuilder.Entity("LogisticsERP.API.Models.OvertimeDuty", b =>
                 {
-                    b.HasOne("LogisticsERP.API.Models.User", "ApprovedByUser")
-                        .WithMany()
-                        .HasForeignKey("ApprovedByUserUserId");
-
                     b.HasOne("LogisticsERP.API.Models.Driver", "Driver")
                         .WithMany("OvertimeDuties")
                         .HasForeignKey("DriverId")
@@ -638,6 +842,10 @@ namespace LogisticsERP.API.Migrations
                     b.HasOne("LogisticsERP.API.Models.DutyLogs", "DutyLog")
                         .WithMany()
                         .HasForeignKey("DutyLogDutyId");
+
+                    b.HasOne("LogisticsERP.API.Models.User", "ApprovedByUser")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("ApprovedByUser");
 
@@ -677,6 +885,11 @@ namespace LogisticsERP.API.Migrations
                     b.Navigation("MaintenanceRecords");
 
                     b.Navigation("OvertimeDuties");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.DutyRoster", b =>
+                {
+                    b.Navigation("Entries");
                 });
 
             modelBuilder.Entity("LogisticsERP.API.Models.Role", b =>

@@ -71,7 +71,7 @@ namespace LogisticsERP.API.Services
             {
                 var haveRecord = await _mainGenReop.GetByIdAsync(MaintenanceRecordId);
                 if (haveRecord == null) return Fail<MaintenanceResponseDto>("Maintenance record is not found.");
-
+                if (dto.DriverId!=null) haveRecord.DriverId = dto.DriverId;
                 if (dto.MaintenanceDate.HasValue) haveRecord.MaintenanceDate = dto.MaintenanceDate.Value;
                 if (dto.CurrentKm.HasValue) haveRecord.CurrentKm = dto.CurrentKm.Value;
                 if (dto.Cost.HasValue) haveRecord.Cost = dto.Cost.Value;
@@ -85,7 +85,6 @@ namespace LogisticsERP.API.Services
 
                 await _mainGenReop.Update(haveRecord);
                 await _context.SaveChangesAsync();
-
                 return Ok(_mapper.Map<MaintenanceResponseDto>(haveRecord), "record successfully updated");
 
             }

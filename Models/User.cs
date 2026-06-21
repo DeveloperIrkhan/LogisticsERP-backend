@@ -17,7 +17,7 @@ namespace LogisticsERP.API.Models
 
         //relationship with Role
         [ForeignKey("RoleId")]
-        public string RoleId { get; set; }
-        public Role Role { get; set; } 
+        public string RoleId { get; set; } = string.Empty;
+        public Role Role { get; set; } = new();
     }
 }

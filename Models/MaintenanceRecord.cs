@@ -17,33 +17,32 @@ namespace LogisticsERP.API.Models
         public string? InvoiceNumber { get; set; }
 
 
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         public decimal? NextMaintenanceKm { get; set; }
         public decimal Cost { get; set; }
         public DateTime MaintenanceDate { get; set; }
         public DateTime? NextMaintenanceDate { get; set; }
+        public string? NextMaintenanceFor { get; set; }
+
 
 
 
         //relationships
 
+        public string? AddedBy { get; set; }
         [ForeignKey("UserId")]
-        public string AddedBy { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
 
 
+        public string VehicleId { get; set; } = string.Empty;
         [ForeignKey("VehicleId")]
-        public string VehicleId { get; set; }
-        public Vehicle Vehicle { get; set; }
+        public Vehicle Vehicle { get; set; } = new();
+
+        public string? DriverId { get; set; }   
+        [ForeignKey("DriverId")]
+        public Driver? Driver { get; set; }
     }
 }
 
 
 
-//var vehicleKm = vehicle.CurrentKm;
-
-//var upcomingMaintenance = _context.MaintenanceRecords
-//.Where(x => x.VehicleId == vehicle.VehicleId &&
-//           (x.NextMaintenanceKm <= vehicleKm + 500 ||
-//            x.NextMaintenanceDate <= DateTime.Today.AddDays(7)))
-//.ToList();

@@ -14,6 +14,6 @@ namespace LogisticsERP.API.DTOs.User
         public string? ProfilePictureUrl { get; set; } = string.Empty;
 
         //relationship with Role
-        public string RoleId { get; set; }
+        public string RoleId { get; set; } = string.Empty;
     }
 }

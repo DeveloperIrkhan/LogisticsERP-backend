@@ -2,9 +2,9 @@
 {
     public enum ExpenseStatus
     {
-        pending = 0,
-        approved = 1,
-        paid = 2,
-        rejected = 3
+        Pending = 0,
+        Approved = 1,
+        Paid = 2,
+        Rejected = 3
     }
 }

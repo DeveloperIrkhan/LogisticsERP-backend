@@ -6,19 +6,19 @@ namespace LogisticsERP.API.DTOs.Drivers
 {
     public class DriverResponseDto
     {
-        public string DriverId { get; set; }
-        public string FullName { get; set; }
-        public string CNIC { get; set; }
-        public string MobileNumber { get; set; }
-        public string Email { get; set; }
-        public string Address { get; set; }
-        public string LicenseNumber { get; set; }
+        public string DriverId { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string CNIC { get; set; } = string.Empty;
+        public string MobileNumber { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string LicenseNumber { get; set; } = string.Empty;
         public DateTime LicenseExpiry { get; set; }
-        public string TypeOfLicence { get; set; }
+        public string TypeOfLicence { get; set; } = string.Empty;
         public DateTime DateOfJoining { get; set; }
-        public string Salary { get; set; }
+        public string Salary { get; set; } = string.Empty;
         public DriverStatus Status { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public string? PhotoUrl { get; set; }
         public string? LicenseUrl { get; set; }

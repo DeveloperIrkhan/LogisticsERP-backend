@@ -8,18 +8,18 @@ namespace LogisticsERP.API.Models
     {
         [Key] 
         public string DriverId { get; set; } = $"PRCS-DRV-{Guid.NewGuid()}";
-        public string FullName { get; set; }
-        public string CNIC { get; set; }
-        public string MobileNumber { get; set; }
-        public string Email { get; set; }
-        public string Address { get; set; }
-        public string LicenseNumber { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string CNIC { get; set; } = string.Empty;
+        public string MobileNumber { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string LicenseNumber { get; set; } = string.Empty;
         public string? PhotoUrl { get; set; }
         public string? LicenseUrl { get; set; }
         public DateTime LicenseExpiry { get; set; }
-        public string typeOfLicence { get; set; }
+        public string typeOfLicence { get; set; } = string.Empty;
         public DateTime DateOfJoining { get; set; } = DateTime.UtcNow;
-        public string Salary { get; set; }
+        public string Salary { get; set; } = string.Empty;
         public DriverStatus Status { get; set; } = DriverStatus.ACTIVE;
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -27,8 +27,8 @@ namespace LogisticsERP.API.Models
         //FORIGN KEY TABLE 
         // Navigation property for the related Vehicle
         // Nullable, optional assignment
-        [ForeignKey("VehicleId")] 
         public string? VehicleId { get; set; }
+        [ForeignKey("VehicleId")] 
         public Vehicle? Vehicle { get; set; }
         public ICollection<FuelRecord>? FuelRecords { get; set; } = [];
         public ICollection<MaintenanceRecord>? MaintenanceRecords { get; set; } = [];

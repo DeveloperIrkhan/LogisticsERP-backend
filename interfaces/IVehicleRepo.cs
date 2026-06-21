@@ -8,18 +8,18 @@ namespace LogisticsERP.API.interfaces
 {
     public interface IVehicleRepo
     {
-        Task<VehicleResponseDto> GetVehicleById(string vehicleId);
-        Task<List<VehicleResponseDto>> GetVehicles(VehicleFilterDto filter);
-        Task<List<VehicleResponseDto>> GetAssignedVehicleList(VehicleStatus Status);
-        Task<List<VehicleResponseDto>> GetUnAssignedVehicleList(VehicleStatus Status);
+        Task<Vehicle> GetVehicleById(string vehicleId);
+        Task<List<Vehicle>> GetVehicles(VehicleFilterDto filter);
+        Task<List<Vehicle>> GetAssignedVehicleList(VehicleStatus Status);
+        Task<List<Vehicle>> GetUnAssignedVehicleList(VehicleStatus Status);
         Task<bool> IsDriverAlreadyAssignedToSameVehicle(string vehicleId, string driverId);
         Task<bool> IsDriverAlreadyAssignedToAnotherVehicle(string vehicleId, string driverId);
         Task<bool> IsVehicleActive(string vehicleId);
 
-        Task<ApiResponse<VehicleResponseDto>> ChangeStatusOfVehicle(string vehicleId, VehicleStatus status);
-        Task <ApiResponse<VehicleResponseDto>> GetDocumentOfVehicleById(string vehicleId);
+        Task<Vehicle?> ChangeStatusOfVehicle(string vehicleId, VehicleStatus status);
+        Task <Vehicle?> GetDocumentOfVehicleById(string vehicleId);
 
-        Task<IEnumerable<VehicleResponseDto>> GetVehicleStatusAsync(VehicleStatus vehicleStatus);
+        Task<IEnumerable<Vehicle>> GetVehicleStatusAsync(VehicleStatus vehicleStatus);
 
     }
 }

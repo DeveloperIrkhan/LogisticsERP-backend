@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using LogisticsERP.API.Data;
 using LogisticsERP.API.DTOs.Drivers;
-using LogisticsERP.API.DTOs.Vehicle;
+using LogisticsERP.API.enums;
+using LogisticsERP.API.Helpers;
 using LogisticsERP.API.interfaces;
 using LogisticsERP.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogisticsERP.API.Services
 {
-    public class DriverService : IDriverService
+    public class DriverService : ServiceBaseFunctions, IDriverService
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
@@ -21,147 +22,344 @@ namespace LogisticsERP.API.Services
         {
             _driverGenRepo = genericDriverRepo;
             _driverRepo = driverRepo;
-            _vehRepo = vehicle; 
+            _vehRepo = vehicle;
             _vehicleGenRepo = genericVehicleReop;
             _context = appDbContext;
             _mapper = mapper;
         }
+
+        #region  crud
+
+        public async Task<ApiResponse<DriverResponseDto>> CreateDriver(DriverCreateDto dto, string? PhotoUrl, string? LicenseUrl)
+        {
+            try
+            {
+                if (dto == null)
+                    return Fail<DriverResponseDto>("Driver data is required.");
+
+                if (await _driverRepo.IsCNICDuplicateAsync(dto.CNIC))
+                    return Fail<DriverResponseDto>("A driver with this CNIC already exists.");
+
+                if (await _driverRepo.IsLicenseDuplicateAsync(dto.LicenseNumber))
+                    return Fail<DriverResponseDto>("A driver with this license number already exists.");
+
+                var driver = _mapper.Map<Driver>(dto);
+                driver.PhotoUrl = PhotoUrl;
+                driver.LicenseUrl = LicenseUrl;
+
+                await _driverGenRepo.AddAsync(driver);
+                await _context.SaveChangesAsync();
+
+                return Ok(_mapper.Map<DriverResponseDto>(driver), "Driver created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Fail<DriverResponseDto>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse<bool>> DeleteDriver(string id)
+        {
+            try
+            {
+                await _driverGenRepo.Delete(id);
+                await _context.SaveChangesAsync();
+                return Ok(true, "driver record deleted successfully!");
+            }
+            catch (Exception ex)
+            {
+                return Fail<bool>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse<IEnumerable<DriverResponseDto>>> GetAllDrivers()
+        {
+            try
+            {
+                var result = await _driverRepo.getAllDriverAsync();
+                var drivers = _mapper.Map<IEnumerable<DriverResponseDto>>(result);
+                return Ok(drivers, $"{drivers.Count()} drivers found successfully");
+            }
+            catch (Exception ex)
+            {
+                return Fail<IEnumerable<DriverResponseDto>>(ex.InnerException?.Message ?? ex.Message);
+            }
+
+        }
+
+        public async Task<ApiResponse<DriverResponseDto>> GetDriverById(string id)
+        {
+            try
+            {
+
+                var driver = await _driverGenRepo.GetByIdAsync(id);
+                return Ok(_mapper.Map<DriverResponseDto>(driver), "driver found successfully");
+            }
+            catch (Exception ex)
+            {
+                return Fail<DriverResponseDto>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse<DriverResponseDto>> UpdateDriver(DriverUpdateDto dto, string? PhotoUrl, string? LicenseUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(dto.DriverId))
+                    return Fail<DriverResponseDto>("DriverId is required.");
+
+                var existingDriver = await _driverGenRepo.GetByIdAsync(dto.DriverId);
+                if (existingDriver == null)
+                    return Fail<DriverResponseDto>("driver not found");
+                // Only update fields that are passed
+                if (dto.FullName != null) existingDriver.FullName = dto.FullName;
+                if (dto.CNIC != null) existingDriver.CNIC = dto.CNIC;
+                if (dto.MobileNumber != null) existingDriver.MobileNumber = dto.MobileNumber;
+                if (dto.Email != null) existingDriver.Email = dto.Email;
+                if (dto.Address != null) existingDriver.Address = dto.Address;
+                if (dto.LicenseNumber != null) existingDriver.LicenseNumber = dto.LicenseNumber;
+                if (dto.LicenseExpiry.HasValue) existingDriver.LicenseExpiry = dto.LicenseExpiry.Value;
+                if (dto.TypeOfLicence != null) existingDriver.typeOfLicence = dto.TypeOfLicence;
+                if (dto.DateOfJoining.HasValue) existingDriver.DateOfJoining = dto.DateOfJoining.Value;
+                if (dto.Salary != null) existingDriver.Salary = dto.Salary;
+                if (dto.Status.HasValue) existingDriver.Status = dto.Status.Value;
+                if (dto.Description != null) existingDriver.Description = dto.Description;
+                if (dto.VehicleId != null) existingDriver.VehicleId = dto.VehicleId;
+
+                // Only update photo/license if new files were uploaded
+                if (PhotoUrl != null) existingDriver.PhotoUrl = PhotoUrl;
+                if (LicenseUrl != null) existingDriver.LicenseUrl = LicenseUrl;
+
+
+
+                await _driverGenRepo.Update(existingDriver);
+                await _context.SaveChangesAsync();
+                return Ok(_mapper.Map<DriverResponseDto>(existingDriver), "driver updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return Fail<DriverResponseDto>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region ASSIGNMENT
+        
         public async Task<ApiResponse<DriverResponseDto>> AssignDriver(string driverId, string vehicleId)
         {
-            var vehicle = await _vehicleGenRepo.GetByIdAsync(vehicleId);
-            if (vehicle == null)
+            try
             {
-                return new ApiResponse<DriverResponseDto>
+                var vehicle = await _vehicleGenRepo.GetByIdAsync(vehicleId);
+                if (vehicle == null)
+                    return Fail<DriverResponseDto>("vehicle not found.");
+                var driver = await _driverGenRepo.GetByIdAsync(driverId);
+
+                if (driver == null)
+                    return Fail<DriverResponseDto>("Driver not found.");
+                if (await _vehRepo.IsDriverAlreadyAssignedToAnotherVehicle(vehicleId, driverId))
+                    return Fail<DriverResponseDto>("Driver is already assigned to this vehicle");
+
+                if (!await _vehRepo.IsVehicleActive(vehicleId))
+                    return Fail<DriverResponseDto>("vehicle is not active for now");
+
+                driver.VehicleId = vehicleId;
+                await _context.SaveChangesAsync();
+                return Ok(_mapper.Map<DriverResponseDto>(driver), "driver assigned successfully!");
+            }
+            catch (Exception ex)
+            {
+                return Fail<DriverResponseDto>(ex.InnerException?.Message ?? ex.Message);
+            }
+
+        }
+
+        public async Task<ApiResponse<DriverResponseDto>> UnassignDriver(string driverId)
+        {
+            try
+            {
+                var driver = await _driverGenRepo.GetByIdAsync(driverId);
+                if (driver == null)
+                    return Fail<DriverResponseDto>("Driver not found!");
+                if (string.IsNullOrEmpty(driver.VehicleId))
+                    return Fail<DriverResponseDto>("Driver is already unassigned!");
+                driver.VehicleId = null;
+                await _context.SaveChangesAsync();
+                return Ok(_mapper.Map<DriverResponseDto>(driver), "driver un assigned successfully!");
+
+            }
+            catch (Exception ex)
+            {
+                return Fail<DriverResponseDto>(ex.InnerException?.Message ?? ex.Message);
+            }
+
+        }
+
+        public async Task<ApiResponse<List<DriverResponseDto>>> GetAssignedDriversListForSignleVehicle(string vehicleId)
+        {
+            try
+            {
+                var driverList = await _driverRepo.GerDriversListForSpecficVehicle(vehicleId);
+                if (driverList == null)
+                    return Fail<List<DriverResponseDto>>("no driver found(s)");
+                var listOfDrivers = _mapper.Map<List<DriverResponseDto>>(driverList);
+                return Ok(listOfDrivers, $"{listOfDrivers.Count} drivers found successfully");
+            }
+            catch (Exception ex)
+            {
+                return Fail<List<DriverResponseDto>>(ex.InnerException?.Message ?? ex.Message);
+            }
+
+        }
+        public async Task<ApiResponse<List<DriverResponseDto>>> DriverListAssignedToSpecficVehicle(string vehicleId)
+        {
+            try
+            {
+
+                var vehicle = await _vehicleGenRepo.GetByIdAsync(vehicleId);
+                if (vehicle == null)
+                    return Fail<List<DriverResponseDto>>("vehicle not found!");
+
+                var driversList = await _driverGenRepo.WhereAsync(d => d.VehicleId == vehicleId);
+                var driverList = _mapper.Map<List<DriverResponseDto>>(driversList);
+                return Ok(driverList, $"{driverList.Count} drivers found successfully!");
+            }
+            catch (Exception ex)
+            {
+                return Fail<List<DriverResponseDto>>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+
+        #endregion
+
+        #region AVAILABILITY check
+        public async Task<ApiResponse<bool>> ChangeDriverStatusAsync(string driverId, DriverStatus status)
+        {
+            try
+            {
+                var driver = await _driverGenRepo.GetByIdAsync(driverId);
+                if (driver == null)
+                    return Fail<bool>("Driver not found.");
+
+                driver.Status = status;
+                await _driverGenRepo.Update(driver);
+                await _context.SaveChangesAsync();
+
+                return Ok(true, $"Driver status changed to {status} successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Fail<bool>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+        public async Task<ApiResponse<List<DriverResponseDto>>> GetAvailableDriversAsync()
+        {
+            try
+            {
+                var drivers = await _driverRepo.GetAvailableDriversAsync();
+                var result = _mapper.Map<List<DriverResponseDto>>(drivers);
+                return Ok(result, $"{result.Count} available driver(s) found.");
+            }
+            catch (Exception ex)
+            {
+                return Fail<List<DriverResponseDto>>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse<List<DriverResponseDto>>> GetDriversByStatusAsync(DriverStatus status)
+        {
+            try
+            {
+                var drivers = await _driverRepo.GetDriversByStatusAsync(status);
+                var result = _mapper.Map<List<DriverResponseDto>>(drivers);
+                return Ok(result, $"{result.Count} driver(s) found with status {status}.");
+            }
+            catch (Exception ex)
+            {
+                return Fail<List<DriverResponseDto>>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+         public async Task<ApiResponse<DriverDutyStatsDto>> GetDriverDutyStatsAsync(string driverId)
+        {
+            try
+            {
+                var driver = await _driverGenRepo.GetByIdAsync(driverId);
+                if (driver == null)
+                    return Fail<DriverDutyStatsDto>("Driver not found.");
+
+                var duties = await _context.DutyLogs
+                    .Where(x => x.DriverId == driverId)
+                    .ToListAsync();
+
+                var isOnDuty = duties.Any(x => x.Status == DutyStatus.InProgress);
+
+                var stats = new DriverDutyStatsDto
                 {
-                    Success = false,
-                    Message = "vehicle not found"
-                };
-            }
-            var driver = await _driverGenRepo.GetByIdAsync(driverId);
-            if (driver == null)
-            {
-                return new ApiResponse<DriverResponseDto>
-                {
-                    Success = false,
-                    Message = "Driver not found"
-                };
-            }
-            if (await _vehRepo.IsDriverAlreadyAssignedToAnotherVehicle(vehicleId, driverId))
-            {
-                return new ApiResponse<DriverResponseDto>
-                {
-                    Success = false,
-                    Message = "Driver is already assigned to this vehicle"
-                };
-            }
-            if(!await _vehRepo.IsVehicleActive(vehicleId))
-            {
-                return new ApiResponse<DriverResponseDto>
-                {
-                    Success = false,
-                    Message = "vehicle is not active for now"
+                    DriverId = driverId,
+                    DriverName = driver.FullName,
+                    TotalDuties = duties.Count,
+                    CompletedDuties = duties.Count(x => x.Status == DutyStatus.Completed),
+                    MissedDuties = duties.Count(x => x.Status == DutyStatus.Cancelled),
+                    CancelledDuties = duties.Count(x => x.Status == DutyStatus.Cancelled),
+                    CurrentlyOnDuty = isOnDuty ? 1 : 0,
+                    TotalKmDriven = duties.Where(x => x.TotalKm.HasValue).Sum(x => x.TotalKm!.Value),
+                    TotalHours = duties.Where(x => x.TotalHours.HasValue).Sum(x => x.TotalHours!.Value),
+                    LastDutyDate = duties.OrderByDescending(x => x.DateOut).FirstOrDefault()?.DateOut,
+                    IsAvailable = !isOnDuty && driver.Status == DriverStatus.ACTIVE
                 };
 
+                return Ok(stats, "Driver duty stats fetched successfully.");
             }
-            //Driver is already assigned to this vehicle
-           
-            driver.VehicleId = vehicleId;
-            await _context.SaveChangesAsync();
-            return new ApiResponse<DriverResponseDto>
+            catch (Exception ex)
             {
-                Success = true,
-                Message = "Driver assigned successfully",
-                Data = _mapper.Map<DriverResponseDto>(driver)
-            };
-        }
-
-        public async Task<DriverResponseDto> UnassignDriver(string driverId)
-        {
-            var driver = await _driverGenRepo.GetByIdAsync(driverId) ?? throw new Exception("Driver not found!");
-            if (string.IsNullOrEmpty(driver.VehicleId))
-                throw new Exception("Driver is already unassigned!");
-            driver.VehicleId = null;
-            await _context.SaveChangesAsync();
-            return _mapper.Map<DriverResponseDto>(driver);
-        }
-
-        public async Task<List<DriverResponseDto>> GetAssignedDriversListForSignleVehicle(string vehId) {
-            var driverList = await _driverRepo.GerDriverListForSpecficVehicle(vehId);
-            return driverList == null ? throw new Exception("no driver found!") : _mapper.Map<List<DriverResponseDto>>(driverList);   
-        }
-
-        public async Task<List<DriverResponseDto>> DriverListAssignedToSpecficVehicle(string vehicleId)
-        {
-            var vehicle = await _vehicleGenRepo.GetByIdAsync(vehicleId);
-            if (vehicle == null)
-            {
-                throw new Exception("vehicle not found!");
+                return Fail<DriverDutyStatsDto>(ex.InnerException?.Message ?? ex.Message);
             }
-            var driversList = await _driverGenRepo.WhereAsync(d => d.VehicleId == vehicleId);
-            return _mapper.Map<List<DriverResponseDto>>(driversList);
         }
 
-        public async Task<DriverResponseDto> CreateDriver(DriverCreateDto driver, string? PhotoUrl, string? LicenseUrl)
+        public async Task<ApiResponse<bool>> IsDriverAvailableAsync(string driverId)
         {
-            if (driver == null)
+            try
             {
-                throw new Exception("vehicle should not be empty!");
+                var driver = await _driverGenRepo.GetByIdAsync(driverId);
+                if (driver == null)
+                    return Fail<bool>("Driver not found.");
+
+                var isOnDuty = await _context.DutyLogs
+                    .AnyAsync(x => x.DriverId == driverId && x.Status == DutyStatus.InProgress);
+
+                return Ok(!isOnDuty, isOnDuty ? "Driver is currently on duty." : "Driver is available.");
             }
-            Driver creatingDriver = new Driver
+            catch (Exception ex)
+            { 
+                return Fail<bool>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+        #endregion
+
+        #region Alerts
+        public async Task<ApiResponse<List<DriverResponseDto>>> GetExpiringLicensesAsync(int days)
+        {
+            try
             {
-                FullName = driver.FullName,
-                CNIC = driver.CNIC,
-                MobileNumber = driver.MobileNumber,
-                Email = driver.Email,
-                Address = driver.Address,
-                LicenseNumber = driver.LicenseNumber,
-                PhotoUrl = PhotoUrl,
-                LicenseUrl = LicenseUrl,
-                LicenseExpiry = driver.LicenseExpiry,
-                typeOfLicence = driver.TypeOfLicence,
-                DateOfJoining = driver.DateOfJoining,
-                Salary = driver.Salary,
-                Status = driver.Status,
-                Description = driver.Description,
-                VehicleId = driver.VehicleId
-            };
-            await _driverGenRepo.AddAsync(creatingDriver);
-            await _context.SaveChangesAsync();
-            return _mapper.Map<DriverResponseDto>(creatingDriver);
+                var today = DateTime.UtcNow;
+                var target = today.AddDays(days);
+
+                var drivers = await _context.Drivers
+                    .Where(x => x.LicenseExpiry >= today && x.LicenseExpiry <= target)
+                    .OrderBy(x => x.LicenseExpiry)
+                    .ToListAsync();
+
+                var result = _mapper.Map<List<DriverResponseDto>>(drivers);
+                return Ok(result, $"{result.Count} driver(s) with license expiring in {days} days.");
+            }
+            catch (Exception ex)
+            {
+                return Fail<List<DriverResponseDto>>(ex.InnerException?.Message ?? ex.Message);
+            }
         }
 
-        public Task DeleteVehicle(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        //return URL of cloudinar uploaded image save the url in database
-        //public async Task<DriverResponseDto> ImageUploadingAsync(string FileUrlFileUrl)
-        //{
-        //    if (FileUrlFileUrl == null)
-        //        throw new Exception("image url should not be empty!");
-        //    await _
-
-
-        //    await _docRepo.(newDocuments);
-        //    await _dbContext.SaveChangesAsync();
-        //}
-
-        public async Task<IEnumerable<DriverResponseDto>> GetAllDrivers()
-        {
-            var result =  await _driverRepo.getAllDriverAsync();
-            return _mapper.Map<IEnumerable<DriverResponseDto>>(result);
-        }
-
-        public  async Task<DriverResponseDto> GetDriverById(string id)
-        {
-            var driver = await _driverGenRepo.GetByIdAsync(id);
-            return _mapper.Map<DriverResponseDto>(driver);
-        }
-
-        public Task<DriverResponseDto> UpdateDriver(DriverUpdateDto vehicle)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }

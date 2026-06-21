@@ -24,7 +24,7 @@ namespace LogisticsERP.API.Controllers
         }
 
         #region Getting All Vehicals
-        [HttpGet("get-all-vehicle")]
+        [HttpGet("get-all-vehicles")]
         public async Task<ActionResult<VehicleResponseDto>> GetAllVehicle()
         {
             var vehicles = await _vehicleService.GetAllVehicles();
@@ -47,13 +47,13 @@ namespace LogisticsERP.API.Controllers
                 return BadRequest("Invalid vehicle data.");
             }
             var createdVehicle = await _vehicleService.CreateVehicle(vehicleCreateDto);
-            return CreatedAtAction(nameof(GetAllVehicle), new { id = createdVehicle.VehicleId }, createdVehicle);
+            return createdVehicle == null ?  BadRequest(createdVehicle) : Ok(createdVehicle);
         }
         #endregion
 
         #region Getting full record of vehicle using vehicleId
         [HttpGet("get-full-record-of-vehicleId/{id}")]
-        public async Task<ActionResult<VehicleResponseDto>> GetFullRecordOdVehicleById(string id)
+        public async Task<ActionResult<VehicleResponseDto>> GetFullRecordOdVehicleById([FromRoute] string id)
         {
             var vehicle = await _vehicleService.GetFullRecordByVehicleById(id);
             if (vehicle == null)
@@ -66,16 +66,16 @@ namespace LogisticsERP.API.Controllers
 
         #region Getting vehicle documents of vehicle by Id
         [HttpGet("get-documents-of-vehicle/{id}")]
-        public async Task<ActionResult<VehicleResponseDto>> GetDocumentOfVehicleById(string id)
+        public async Task<ActionResult<VehicleResponseDto>> GetDocumentOfVehicleById([FromRoute] string id)
         {
-            var vehicle = await _vehicleService.GetDocumentOfVehicleById(id);
+            var vehicle = await _vehicleService.GetDocumentsOfVehicleById(id);
             return Ok(vehicle);
         }
         #endregion
 
         #region Getting only vehicle by Id
         [HttpGet("get-vehicle-by-id/{id}")]
-        public async Task<ActionResult<VehicleResponseDto>> GetVehicleById(string id)
+        public async Task<ActionResult<VehicleResponseDto>> GetVehicleById([FromRoute] string id)
         {
             var vehicle = await _vehicleService.GetVehicleById(id);
             if (vehicle == null)
@@ -87,19 +87,11 @@ namespace LogisticsERP.API.Controllers
         #endregion
 
         #region Getting only Assigned vehicles
-        [HttpGet("get-assigned-vehicle-list")]
-        public async Task<ActionResult<ApiResponse<VehicleResponseDto>>> GetAssignedVehicleList()
+        [HttpGet("get-active-vehicle-list")]
+        public async Task<ActionResult<VehicleResponseDto>> GetAssignedVehicleList()
         {
             var vehicle = await _vehicleService.GetAssignedVehicleList(VehicleStatus.Active);
-            if (vehicle == null)
-            {
-                return new ApiResponse<VehicleResponseDto>
-                {
-                    Success = false,
-                    Message = "No assigned vehicles found."
-                };
-            }
-            return Ok(vehicle);
+            return vehicle.Success ? Ok(vehicle) : BadRequest(vehicle);
         }
         #endregion
 
@@ -108,20 +100,17 @@ namespace LogisticsERP.API.Controllers
         public async Task<ActionResult<VehicleResponseDto>> GetUnAssignedVehicleList()
         {
             var vehicle = await _vehicleService.GetUnAssignedVehicleList(VehicleStatus.InActive);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-            return Ok(vehicle);
+            return vehicle.Success ? Ok(vehicle) : BadRequest(vehicle);
         }
         #endregion
 
         #region specfic vehicle Assigned driver list
         [HttpGet("get-assigned-drivers-for-vehicle")]
-        public async Task<ActionResult<VehicleResponseDto>> GerDriverListForSpecficVehicle(string vehicleId)
+        public async Task<ActionResult<VehicleResponseDto>> GerDriverListForSpecficVehicle
+            ([FromRoute] string vehicleId)
         {
             var response = await _driverService.GetAssignedDriversListForSignleVehicle(vehicleId);
-            return Ok(response);
+            return response.Success ? Ok(response) : BadRequest(response);
         }
         #endregion
 
@@ -129,64 +118,73 @@ namespace LogisticsERP.API.Controllers
         [HttpPut("update-vehicle")]
         public async Task<ActionResult<VehicleResponseDto>> UpdateVehicle([FromBody] VehicleUpdateDto dto)
         {
-            //ArgumentNullException.ThrowIfNull(id, nameof(id));
             if (dto == null)
-            {
                 return BadRequest("Invalid vehicle data.");
-            }
+
             var updatedVehicle = await _vehicleService.UpdateVehicle(dto);
-            return updatedVehicle == null ?
-                 NotFound()
-                : Ok(updatedVehicle);
+            return updatedVehicle.Success ? Ok(updatedVehicle) : BadRequest(updatedVehicle);
+        }
+        #endregion
+
+        #region delete Vehicle
+        [HttpDelete("delete-vehicle/{vehicleId}")]
+        public async Task<ActionResult<VehicleResponseDto>> DeleteVehicle([FromRoute] string vehicleId)
+        {
+            if (string.IsNullOrEmpty(vehicleId))
+                return BadRequest("Invalid vehicle Id or pass Id");
+
+            var result = await _vehicleService.DeleteVehicle(vehicleId);
+            return result.Success ? Ok(result) : NotFound(result);
         }
         #endregion
 
         #region Filtering 
         [HttpGet("filtering-vehicle")]
-        public async Task<IActionResult> VehivleFiltering([FromQuery] VehicleFilterDto vehicleFilterDto)
+        public async Task<IActionResult> VehicleFilter([FromQuery] VehicleFilterDto vehicleFilterDto)
         {
             var result = await _vehicleService.GetVehicles(vehicleFilterDto);
-            return Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result);
+
         }
         #endregion
 
-        #region Expiry Tracking (Registration / Insurance / Fitness)
-        [HttpGet("expiring")]
-        public async Task<IActionResult> GetExpiry([FromQuery] int days = 30)
+        #region Expiry Tracking (Registration)
+        [HttpGet("get-registeration-expiry")]
+        public async Task<IActionResult> GetRegisterationExpiry([FromQuery] int days = 30)
         {
-            var result = _vehicleService.GetExpiringVehicles(days);
-            return Ok(result);
+            var result = await _vehicleService.GetRegisterationExpiryVehicles(days);
+            return result.Success ? Ok(result) : BadRequest(result);
+
         }
         #endregion
 
-        #region unassign-drivers using vehicle-Id
-        [HttpPost("unassign-driver")]
-        public async Task<IActionResult> UnassignDriver(string vehicleId)
+        #region get-fitness-expiry
+        [HttpGet("get-fitness-expiry")]
+        public async Task<IActionResult> GetFittnessExpiryVehicles([FromQuery] int days = 30)
         {
-            var result = await _driverService.UnassignDriver(vehicleId);
-            return Ok(result);
+            var result = await _vehicleService.GetFittnessExpiryVehicles(days);
+            return result.Success ? Ok(result) : BadRequest(result);
+
         }
         #endregion
 
-        #region drivers-list
-        [HttpGet("drivers-list")]
-        public async Task<IActionResult> DriverList(string vehicleId)
+        #region Expiry Tracking (Fittness)
+        [HttpGet("get-Insurance-expiry")]
+        public async Task<IActionResult> GetInsuranceExpiryVehicles([FromQuery] int days = 30)
         {
-            var result = await _driverService.DriverListAssignedToSpecficVehicle(vehicleId);
-            return Ok(result);
+            var result = await _vehicleService.GetInsuranceExpiryVehicles(days);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
         #endregion
+
 
         #region change vehicle state 
         [HttpPut("change-vehicle-state")]
-        public async Task<ActionResult<VehicleResponseDto>> MakeVehicleIsActive([FromQuery] string vehicleId, VehicleStatus status)
+        public async Task<ActionResult<VehicleResponseDto>> ChangeVehicleStatus([FromRoute] string vehicleId, [FromQuery] VehicleStatus status)
         {
             var result = await _vehicleService.ChangeVehicleStatusAsync(vehicleId,status);
-            if (result == null)
-            {
-                return BadRequest("Failed to make vehicle is active.");
-            }
-            return Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result);
+
         }
 
         #endregion
@@ -195,12 +193,9 @@ namespace LogisticsERP.API.Controllers
         [HttpGet("get-by-status")]
         public async Task<ActionResult> GetVehicleStatus([FromQuery] VehicleStatus vehicleStatus)
         {
-            var response = await _vehicleService.GetVehicleStatus(vehicleStatus);
-            if (response == null)
-            {
-                return BadRequest("Failed to retrieve vehicle status.");
-            }
-            return Ok(response);
+            var result = await _vehicleService.GetVehicleStatus(vehicleStatus);
+            return result.Success ? Ok(result) : BadRequest(result);
+
         }
         #endregion
     }

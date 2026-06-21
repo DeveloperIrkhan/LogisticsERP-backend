@@ -8,13 +8,13 @@ namespace LogisticsERP.API.Models
         [Key]
         public string DocumentId { get; set; } = $"PRCS-DOC-{Guid.NewGuid()}";
         [ForeignKey("VehicleId")]
-        public string VehicleId { get; set; }
+        public string VehicleId { get; set; } = string.Empty;
 
-        public Vehicle Vehicle { get; set; }
+        public Vehicle Vehicle { get; set; } = new();
 
-        public string DocumentType { get; set; }
+        public string DocumentType { get; set; } = string.Empty;
 
-        public string FileUrl { get; set; }
+        public string FileUrl { get; set; } = string.Empty;
 
         public string? PublicId { get; set; }
 
