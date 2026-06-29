@@ -9,7 +9,6 @@ namespace LogisticsERP.API.Models
     {
         [Key]
         public string MaintenanceRecordId { get; set; } = $"PRCS-MEN-{Guid.NewGuid()}";
-        //ServiceDate
         public decimal CurrentKm { get; set; }
         public string? MaintenanceType { get; set; }
         public string? WorkshopName { get; set; }

@@ -22,7 +22,7 @@ namespace LogisticsERP.API.Controllers
             _vehicleService = vehicleService;
             _driverService = driverService;
         }
-
+        //done
         #region Getting All Vehicals
         [HttpGet("get-all-vehicles")]
         public async Task<ActionResult<VehicleResponseDto>> GetAllVehicle()
@@ -37,7 +37,7 @@ namespace LogisticsERP.API.Controllers
 
 
         #endregion
-
+        //done
         #region Adding New Vehicle
         [HttpPost("add-vehicle")]
         public async Task<ActionResult<VehicleResponseDto>> AddVehicle([FromBody] VehicleCreateDto vehicleCreateDto)
@@ -47,10 +47,10 @@ namespace LogisticsERP.API.Controllers
                 return BadRequest("Invalid vehicle data.");
             }
             var createdVehicle = await _vehicleService.CreateVehicle(vehicleCreateDto);
-            return createdVehicle == null ?  BadRequest(createdVehicle) : Ok(createdVehicle);
+            return createdVehicle == null ? BadRequest(createdVehicle) : Ok(createdVehicle);
         }
         #endregion
-
+        //done
         #region Getting full record of vehicle using vehicleId
         [HttpGet("get-full-record-of-vehicleId/{id}")]
         public async Task<ActionResult<VehicleResponseDto>> GetFullRecordOdVehicleById([FromRoute] string id)
@@ -63,7 +63,7 @@ namespace LogisticsERP.API.Controllers
             return Ok(vehicle);
         }
         #endregion
-
+        //done
         #region Getting vehicle documents of vehicle by Id
         [HttpGet("get-documents-of-vehicle/{id}")]
         public async Task<ActionResult<VehicleResponseDto>> GetDocumentOfVehicleById([FromRoute] string id)
@@ -72,12 +72,12 @@ namespace LogisticsERP.API.Controllers
             return Ok(vehicle);
         }
         #endregion
-
+        //done
         #region Getting only vehicle by Id
         [HttpGet("get-vehicle-by-id/{id}")]
         public async Task<ActionResult<VehicleResponseDto>> GetVehicleById([FromRoute] string id)
         {
-            var vehicle = await _vehicleService.GetVehicleById(id);
+            var vehicle = await _vehicleService.GetFullRecordByVehicleById(id);
             if (vehicle == null)
             {
                 return NotFound();
@@ -85,7 +85,7 @@ namespace LogisticsERP.API.Controllers
             return Ok(vehicle);
         }
         #endregion
-
+        //dashboard //progress
         #region Getting only Assigned vehicles
         [HttpGet("get-active-vehicle-list")]
         public async Task<ActionResult<VehicleResponseDto>> GetAssignedVehicleList()
@@ -94,7 +94,7 @@ namespace LogisticsERP.API.Controllers
             return vehicle.Success ? Ok(vehicle) : BadRequest(vehicle);
         }
         #endregion
-
+        //dashboard //progress
         #region Getting only Unassigned vehicles
         [HttpGet("get-unassigned-vehicle-list")]
         public async Task<ActionResult<VehicleResponseDto>> GetUnAssignedVehicleList()
@@ -103,9 +103,9 @@ namespace LogisticsERP.API.Controllers
             return vehicle.Success ? Ok(vehicle) : BadRequest(vehicle);
         }
         #endregion
-
+        //done
         #region specfic vehicle Assigned driver list
-        [HttpGet("get-assigned-drivers-for-vehicle")]
+        [HttpGet("get-assigned-drivers-for-vehicle/{vehicleId}")]
         public async Task<ActionResult<VehicleResponseDto>> GerDriverListForSpecficVehicle
             ([FromRoute] string vehicleId)
         {
@@ -113,7 +113,7 @@ namespace LogisticsERP.API.Controllers
             return response.Success ? Ok(response) : BadRequest(response);
         }
         #endregion
-
+        //done
         #region Updating Vehicle
         [HttpPut("update-vehicle")]
         public async Task<ActionResult<VehicleResponseDto>> UpdateVehicle([FromBody] VehicleUpdateDto dto)
@@ -125,7 +125,7 @@ namespace LogisticsERP.API.Controllers
             return updatedVehicle.Success ? Ok(updatedVehicle) : BadRequest(updatedVehicle);
         }
         #endregion
-
+        //done
         #region delete Vehicle
         [HttpDelete("delete-vehicle/{vehicleId}")]
         public async Task<ActionResult<VehicleResponseDto>> DeleteVehicle([FromRoute] string vehicleId)
@@ -179,10 +179,10 @@ namespace LogisticsERP.API.Controllers
 
 
         #region change vehicle state 
-        [HttpPut("change-vehicle-state")]
+        [HttpPut("change-vehicle-status/{vehicleId}")]
         public async Task<ActionResult<VehicleResponseDto>> ChangeVehicleStatus([FromRoute] string vehicleId, [FromQuery] VehicleStatus status)
-        {
-            var result = await _vehicleService.ChangeVehicleStatusAsync(vehicleId,status);
+            {
+            var result = await _vehicleService.ChangeVehicleStatusAsync(vehicleId, status);
             return result.Success ? Ok(result) : BadRequest(result);
 
         }
@@ -197,6 +197,16 @@ namespace LogisticsERP.API.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
 
         }
+        //[HttpGet("change-by-status")]
+        //public async Task<ActionResult> ChangeVehicleStatus([FromQuery] UpdateVehicleStatusRequest vehicleStatus)
+        //{
+        //    var result = await _vehicleService.ChangevehicleStatusAsync(vehicleStatus);
+        //    return result.Success ? Ok(result) : BadRequest(result);
+
+        //}
+
+
+
         #endregion
     }
 }

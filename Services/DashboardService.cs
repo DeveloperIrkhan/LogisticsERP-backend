@@ -52,7 +52,7 @@ namespace LogisticsERP.API.Services
                 {
                     TotalDrivers = drivers.Count,
                     TotalVehicles = vehicles.Count,
-                    ActiveDrivers = drivers.Count(x => x.Status == DriverStatus.ACTIVE),
+                    ActiveDrivers = drivers.Count(x => x.Status == DriverStatus.Active),
                     ActiveVehicles = vehicles.Count(x => x.Status == VehicleStatus.Active),
                     AssignedVehicles = vehicles.Count(x => x.Drivers.Any(y => y.VehicleId == x.VehicleId)),
                     UnassignedVehicles = vehicles.Count(x => !drivers.Any(d => d.VehicleId == x.VehicleId)),
@@ -78,8 +78,8 @@ namespace LogisticsERP.API.Services
                 var drivers = await _context.Drivers.ToListAsync();
                 var DriverStats = new DriverStatsDto
                 {
-                    TotalActiveDrivers = drivers.Count(x => x.Status == DriverStatus.ACTIVE),
-                    InActiveDrivers = drivers.Count(x => x.Status == DriverStatus.INACTIVE),
+                    TotalActiveDrivers = drivers.Count(x => x.Status == DriverStatus.Active),
+                    InActiveDrivers = drivers.Count(x => x.Status == DriverStatus.Inactive),
                     OnDutyDrivers = await _context.DutyLogs.Where(x => x.Status == DutyStatus.InProgress)
                                                             .Select(x => x.DriverId)
                                                             .Distinct()

@@ -176,10 +176,10 @@ namespace LogisticsERP.API.Services
         public async Task<ApiResponse<List<DutyResponseDto>>> GetByVehicleAsync(string vehicleId)
         {
             try{
-                var vehicle = await _genericRepo.GetByIdAsync(vehicleId);
-                if (vehicle == null) return Fail<List<DutyResponseDto>>("vehicle not found");
+                var duties= await _dutyRepo.GetByVehicleAsync(vehicleId);
+                if (duties == null) return Fail<List<DutyResponseDto>>("duties not found");
 
-                var result = _mapper.Map<List<DutyResponseDto>>(vehicle);
+                var result = _mapper.Map<List<DutyResponseDto>>(duties);
                 return Ok(result, $"{result.Count} duty record(s) found for vehicle.");
             }
             catch (Exception ex)
@@ -214,7 +214,7 @@ namespace LogisticsERP.API.Services
                 return Fail<DutyResponseDto>(ex.InnerException?.Message ?? ex.Message);
             }
         }
-        public async Task<ApiResponse<DutyResponseDto>> EndDutyAsync(string dutyId, EndDutyDto dto)
+        public async Task<ApiResponse<DutyResponseDto>> EndDutyAsync(string dutyId, EndDutyDto dto) 
         {
             try
             {
@@ -228,7 +228,7 @@ namespace LogisticsERP.API.Services
                     return Fail<DutyResponseDto>("Duty not started yet.");
 
                 duty.Status = DutyStatus.Completed;
-                duty.DateIn = DateTime.UtcNow;
+                duty.DateIn = dto.DateIn;
                 duty.KillometerIn = dto.KillometerIn;
 
                 if (duty.KillometerOut.HasValue)

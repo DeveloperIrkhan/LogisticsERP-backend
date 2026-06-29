@@ -27,7 +27,7 @@ namespace LogisticsERP.API.Repositories
         public async Task<List<DutyLogs>> GetByDateRangeAsync(DateTime from, DateTime to)
         {
             return await _context.DutyLogs
-               .Where(x=> x.DateOut >= from && x.DateIn<= to)
+               .Where(x=> x.DateOut <= to && x.DateIn >= from)
                .OrderByDescending(x => x.DateOut)
                .ToListAsync();
         }

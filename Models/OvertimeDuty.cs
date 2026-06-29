@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LogisticsERP.API.Models
 {
-    [Table("OvertimeDuties")]
+    [Table("OvertimeDuty")]
     public class OvertimeDuty
     {
         [Key] 
@@ -25,10 +25,10 @@ namespace LogisticsERP.API.Models
         public string? Reason { get; set; }
         public string? Notes { get; set; }
 
-        public string ApprovedBy { get; set; }
+        public string? ApprovedBy { get; set; }
         [ForeignKey("UserId")]
-        public User ApprovedByUser { get; set; }
-        public OvertimeStatus Status { get; set; } = OvertimeStatus.Pending;
+        public User? ApprovedByUser { get; set; }
+        public OvertimeStatus Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

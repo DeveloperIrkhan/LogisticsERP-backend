@@ -37,7 +37,7 @@ namespace LogisticsERP.API.Repositories
             var avalibledriverList = await _dbContext.DutyLogs.Where(x=> x.Status == DutyStatus.InProgress).Select(x=> x.DriverId).ToListAsync();
 
             return await _dbContext.Drivers
-                .Where(x => x.Status == DriverStatus.ACTIVE
+                .Where(x => x.Status == DriverStatus.Active
                 && !avalibledriverList.Contains(x.DriverId))
                 .ToListAsync();
         }

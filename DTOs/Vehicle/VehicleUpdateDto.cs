@@ -20,10 +20,21 @@ namespace LogisticsERP.API.DTOs.Vehicle
         public DateTime? RegistrationDate { get; set; }
         public DateTime? RegistrationExpiry { get; set; }
         public DateTime? FitnessExpiry { get; set; }
+        public DateTime? InsuranceExpiry { get; set; } = DateTime.UtcNow;
+
         public string InsuredBy { get; set; } = string.Empty;
         public DateTime? InsuranceFrom { get; set; }
         public DateTime? InsuranceTo { get; set; }
         public string TypeOfInsurance { get; set; } = string.Empty;
         public VehicleStatus? Status { get; set; }
+    }
+
+
+
+
+    public class UpdateVehicleStatusRequest
+    {
+        public string VehicleId { get; set; }
+        public VehicleStatus Status { get; set; }
     }
 }

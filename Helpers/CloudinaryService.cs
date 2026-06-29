@@ -27,16 +27,29 @@ namespace LogisticsERP.API.Helpers
 
         public async Task<CloudinaryUploadResultDto> UploadImage(IFormFile formFile, string? destinationFolderName)
         {
-            await using var stream = formFile.OpenReadStream();
 
+            if (formFile is null) throw new ArgumentNullException(nameof(formFile), "formFile is null");
+            if (_cloudinary is null) throw new InvalidOperationException("_cloudinary is null - DI/config issue");
+
+
+
+
+            var folder = string.IsNullOrWhiteSpace(destinationFolderName)
+                ? "Profile-Images" : destinationFolderName.Trim();
+            await using var stream = formFile.OpenReadStream();
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(formFile.FileName, stream),
-                Folder = destinationFolderName ?? "Profile-Images"
+                Folder = folder
             };
             var result = await _cloudinary.UploadAsync(uploadParams);
 
-            return result == null ? throw new Exception("Image upload failed") : new CloudinaryUploadResultDto
+
+            if (result is null) throw new Exception("Image upload failed: result is null");
+            if (result.Error is not null) throw new Exception($"Image upload failed: {result.Error.Message}");
+            if (result.SecureUrl is null) throw new Exception("Image upload failed: SecureUrl is null");
+
+            return new CloudinaryUploadResultDto
             {
                 FileUrl = result.SecureUrl.ToString(),
                 PublicId = result.PublicId
@@ -118,7 +131,7 @@ namespace LogisticsERP.API.Helpers
             return results;
         }
 
-       
+
         public async Task<CloudinaryUploadResultDto> UpdateFileAsync(string publicId, IFormFile newFile, string? destinationFolderName)
         {
             var document = await _dbContext.VehicleDocuments.FirstOrDefaultAsync(d => d.PublicId == publicId);

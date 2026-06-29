@@ -21,11 +21,16 @@ namespace LogisticsERP.API.Repositories
             _mapper = mapper;
         }
 
+        public async Task<List<Vehicle>> GetAllVehiclesAsync()
+        {
+           return await _context.Vehicles
+                        .Include(x=> x.Drivers)
+                        .Include(x=> x.Documents)
+                        .ToListAsync();
+        }
+
         public async Task<List<Vehicle>> GetAssignedVehicleList(VehicleStatus Status)
         {
-            //if (!Enum.TryParse<VehicleStatus>(Status, true, out var parsedStatus))
-            //    throw new Exception("Invalid status");
-
             var result = await _context.Vehicles
                 .Include(x => x.Drivers)
                 .Include(x => x.Documents)
@@ -80,11 +85,11 @@ namespace LogisticsERP.API.Repositories
             if (filter.Status.HasValue)
                 query = query.Where(x => x.Status == filter.Status);
 
-            if (filter.ToDate.HasValue)
-                query = query.Where(x => x.RegistrationDate >= filter.ToDate);
-
             if (filter.FromDate.HasValue)
-                query = query.Where(x => x.RegistrationDate <= filter.FromDate);
+                query = query.Where(x => x.RegistrationDate >= filter.FromDate);
+
+            if (filter.ToDate.HasValue)
+                query = query.Where(x => x.RegistrationDate <= filter.ToDate);
 
             var result = await query.ToListAsync();
             return result;
@@ -106,13 +111,13 @@ namespace LogisticsERP.API.Repositories
         public async Task<bool> IsDriverAlreadyAssignedToAnotherVehicle(string vehicleId, string driverId)
         {
             return await _context.Drivers.AnyAsync(d => 
-            d.DriverId == driverId && d.VehicleId == vehicleId);
+            d.DriverId == driverId && d.VehicleId != null && d.VehicleId != vehicleId);
         }
 
         public async Task<bool> IsDriverAlreadyAssignedToSameVehicle(string vehicleId, string driverId)
         {
             return await _context.Drivers.AnyAsync(d =>
-           d.DriverId == driverId && d.VehicleId != null);
+           d.DriverId == driverId && d.VehicleId == null);
         }
 
         public async Task<bool> IsVehicleActive(string vehicleId)
@@ -142,5 +147,6 @@ namespace LogisticsERP.API.Repositories
             var result = await _context.Vehicles.Where(x => x.Status == vehicleStatus).ToListAsync();
             return result;
         }
+
     }
 }

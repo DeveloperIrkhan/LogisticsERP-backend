@@ -19,8 +19,7 @@ namespace LogisticsERP.API.Models
         public DateTime LicenseExpiry { get; set; }
         public string typeOfLicence { get; set; } = string.Empty;
         public DateTime DateOfJoining { get; set; } = DateTime.UtcNow;
-        public string Salary { get; set; } = string.Empty;
-        public DriverStatus Status { get; set; } = DriverStatus.ACTIVE;
+        public DriverStatus Status { get; set; } = DriverStatus.Active;
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

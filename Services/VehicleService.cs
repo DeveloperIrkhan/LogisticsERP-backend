@@ -81,7 +81,7 @@ namespace LogisticsERP.API.Services
             try
             {
 
-            var result = await _repo.GetAllAsync();
+                var result = await _vehicleRepo.GetAllVehiclesAsync();
             var listOfVehicles = _mapper.Map<IEnumerable<VehicleResponseDto>>(result);
             return Ok(listOfVehicles, $"{listOfVehicles.Count()} vehicle found(s)!");
             }
@@ -231,6 +231,8 @@ namespace LogisticsERP.API.Services
         {
             try
             {
+                var found = await _vehicleRepo.GetVehicleById(vehicleId);
+                if (found == null) return Fail<VehicleResponseDto>("vehicle not found.");
                 var result = await _vehicleRepo.ChangeStatusOfVehicle(vehicleId, status);
                 if (result == null)
                     return Fail<VehicleResponseDto>("failed to changed the status");

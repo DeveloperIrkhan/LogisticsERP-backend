@@ -5,7 +5,6 @@
         Fuel,
         Maintenance,
         Duty,
-        Salary,
         Insurance,
         Registration,
         Repair,

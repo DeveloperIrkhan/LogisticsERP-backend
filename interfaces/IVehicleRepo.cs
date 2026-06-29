@@ -15,6 +15,7 @@ namespace LogisticsERP.API.interfaces
         Task<bool> IsDriverAlreadyAssignedToSameVehicle(string vehicleId, string driverId);
         Task<bool> IsDriverAlreadyAssignedToAnotherVehicle(string vehicleId, string driverId);
         Task<bool> IsVehicleActive(string vehicleId);
+        Task<List<Vehicle>> GetAllVehiclesAsync();
 
         Task<Vehicle?> ChangeStatusOfVehicle(string vehicleId, VehicleStatus status);
         Task <Vehicle?> GetDocumentOfVehicleById(string vehicleId);

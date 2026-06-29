@@ -1,4 +1,4 @@
-﻿using LogisticsERP.API.Data;
+﻿    using LogisticsERP.API.Data;
 using LogisticsERP.API.interfaces;
 using LogisticsERP.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -67,14 +67,14 @@ namespace LogisticsERP.API.Repositories
         {
             return await _context.FuelRecords
                             .Where(x => x.VehicleId == vehicleId)
-                            .SumAsync(x => x.Liters);
+                            .SumAsync(x => x.TotalCost);
         }
 
         public async Task<decimal> GetTotalLitersByVehicleAsync(string vehicleId)
         {
             return await _context.FuelRecords
                             .Where(x => x.VehicleId == vehicleId)
-                            .SumAsync(x => x.TotalCost);
+                            .SumAsync(x => x.Liters);
         }
 
         public async Task<decimal> GetYearlyCostAsync(int year)

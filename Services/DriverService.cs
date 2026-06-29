@@ -29,7 +29,7 @@ namespace LogisticsERP.API.Services
         }
 
         #region  crud
-
+        //done
         public async Task<ApiResponse<DriverResponseDto>> CreateDriver(DriverCreateDto dto, string? PhotoUrl, string? LicenseUrl)
         {
             try
@@ -121,7 +121,6 @@ namespace LogisticsERP.API.Services
                 if (dto.LicenseExpiry.HasValue) existingDriver.LicenseExpiry = dto.LicenseExpiry.Value;
                 if (dto.TypeOfLicence != null) existingDriver.typeOfLicence = dto.TypeOfLicence;
                 if (dto.DateOfJoining.HasValue) existingDriver.DateOfJoining = dto.DateOfJoining.Value;
-                if (dto.Salary != null) existingDriver.Salary = dto.Salary;
                 if (dto.Status.HasValue) existingDriver.Status = dto.Status.Value;
                 if (dto.Description != null) existingDriver.Description = dto.Description;
                 if (dto.VehicleId != null) existingDriver.VehicleId = dto.VehicleId;
@@ -307,7 +306,7 @@ namespace LogisticsERP.API.Services
                     TotalKmDriven = duties.Where(x => x.TotalKm.HasValue).Sum(x => x.TotalKm!.Value),
                     TotalHours = duties.Where(x => x.TotalHours.HasValue).Sum(x => x.TotalHours!.Value),
                     LastDutyDate = duties.OrderByDescending(x => x.DateOut).FirstOrDefault()?.DateOut,
-                    IsAvailable = !isOnDuty && driver.Status == DriverStatus.ACTIVE
+                    IsAvailable = !isOnDuty && driver.Status == DriverStatus.Active
                 };
 
                 return Ok(stats, "Driver duty stats fetched successfully.");

@@ -259,9 +259,6 @@
                     "type": "string",
                     "format": "date-time"
                   },
-                  "Salary": {
-                    "type": "string"
-                  },
                   "Status": {
                     "$ref": "#/components/schemas/DriverStatus"
                   },
@@ -305,9 +302,6 @@
                   "style": "form"
                 },
                 "DateOfJoining": {
-                  "style": "form"
-                },
-                "Salary": {
                   "style": "form"
                 },
                 "Status": {
@@ -429,9 +423,6 @@
                     "type": "string",
                     "format": "date-time"
                   },
-                  "Salary": {
-                    "type": "string"
-                  },
                   "Photo": {
                     "type": "string",
                     "format": "binary"
@@ -480,9 +471,6 @@
                   "style": "form"
                 },
                 "DateOfJoining": {
-                  "style": "form"
-                },
-                "Salary": {
                   "style": "form"
                 },
                 "Photo": {
@@ -3697,7 +3685,7 @@
         }
       }
     },
-    "/api/Vehicle/get-assigned-drivers-for-vehicle": {
+    "/api/Vehicle/get-assigned-drivers-for-vehicle/{vehicleId}": {
       "get": {
         "tags": [
           "Vehicle"
@@ -3971,7 +3959,7 @@
         }
       }
     },
-    "/api/Vehicle/change-vehicle-state": {
+    "/api/Vehicle/change-vehicle-status/{vehicleId}": {
       "put": {
         "tags": [
           "Vehicle"
@@ -4114,10 +4102,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "salary": {
-            "type": "string",
-            "nullable": true
-          },
           "status": {
             "$ref": "#/components/schemas/DriverStatus"
           },
@@ -4146,8 +4130,8 @@
       },
       "DriverStatus": {
         "enum": [
-          "ACTIVE",
-          "INACTIVE"
+          "Active",
+          "Inactive"
         ],
         "type": "string"
       },
@@ -4303,7 +4287,6 @@
           "Fuel",
           "Maintenance",
           "Duty",
-          "Salary",
           "Insurance",
           "Registration",
           "Repair",
@@ -5300,6 +5283,11 @@
             "nullable": true
           },
           "fitnessExpiry": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "insuranceExpiry": {
             "type": "string",
             "format": "date-time",
             "nullable": true

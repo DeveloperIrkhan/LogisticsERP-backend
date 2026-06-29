@@ -16,7 +16,6 @@ namespace LogisticsERP.API.DTOs.Drivers
         public DateTime LicenseExpiry { get; set; }
         public string TypeOfLicence { get; set; } = string.Empty;
         public DateTime DateOfJoining { get; set; }
-        public string Salary { get; set; } = string.Empty;
         public DriverStatus Status { get; set; }
         public string Description { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }

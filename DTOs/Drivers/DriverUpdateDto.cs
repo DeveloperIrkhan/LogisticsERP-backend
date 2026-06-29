@@ -15,7 +15,7 @@ namespace LogisticsERP.API.DTOs.Drivers
         public DateTime? LicenseExpiry { get; set; }
         public string? TypeOfLicence { get; set; } 
         public DateTime? DateOfJoining { get; set; }
-        public string? Salary { get; set; } 
+
         public IFormFile? Photo { get; set; }
         public IFormFile? License { get; set; }
         public DriverStatus? Status { get; set; }

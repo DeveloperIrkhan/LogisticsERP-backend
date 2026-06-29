@@ -175,11 +175,6 @@
         "IsRequired": false
       },
       {
-        "Name": "Salary",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "Status",
         "Type": "LogisticsERP.API.enums.DriverStatus",
         "IsRequired": false
@@ -493,11 +488,6 @@
       {
         "Name": "DateOfJoining",
         "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "Salary",
-        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -2351,7 +2341,7 @@
   {
     "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
     "Method": "ChangeVehicleStatus",
-    "RelativePath": "api/Vehicle/change-vehicle-state",
+    "RelativePath": "api/Vehicle/change-vehicle-status/{vehicleId}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -2359,7 +2349,7 @@
       {
         "Name": "vehicleId",
         "Type": "System.String",
-        "IsRequired": false
+        "IsRequired": true
       },
       {
         "Name": "status",
@@ -2504,7 +2494,7 @@
   {
     "ContainingType": "LogisticsERP.API.Controllers.VehicleController",
     "Method": "GerDriverListForSpecficVehicle",
-    "RelativePath": "api/Vehicle/get-assigned-drivers-for-vehicle",
+    "RelativePath": "api/Vehicle/get-assigned-drivers-for-vehicle/{vehicleId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -2512,7 +2502,7 @@
       {
         "Name": "vehicleId",
         "Type": "System.String",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
