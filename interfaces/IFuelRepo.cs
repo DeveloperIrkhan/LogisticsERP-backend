@@ -4,6 +4,8 @@ namespace LogisticsERP.API.interfaces
 {
     public interface IFuelRepo
     {
+        Task<List<FuelRecord>> GetAll();
+        Task<FuelRecord> GetByIdAsync(string fuelId);
         Task<List<FuelRecord>> GetByVehicleAsync(string vehicleId);
         Task<List<FuelRecord>> GetByDriverAsync(string driverId);
         Task<List<FuelRecord>> GetByDateRangeAsync(DateTime from, DateTime to);

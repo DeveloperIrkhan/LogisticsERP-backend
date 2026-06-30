@@ -45,9 +45,14 @@ namespace LogisticsERP.API.Helpers
             CreateMap<MaintenanceRecord, MaintenanceSummaryDto>();
 
             //mapping FuelRecord to Dtos
-            CreateMap<FuelCreateDto, FuelRecord>();
+            CreateMap<FuelCreateDto, FuelRecord>()
+                 .ForMember(dest => dest.Vehicle, opt => opt.Ignore())
+                 .ForMember(dest => dest.Driver, opt => opt.Ignore());
+
             CreateMap<FuelUpdateDto, FuelRecord>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                 .ForMember(dest => dest.Vehicle, opt => opt.Ignore())
+                    .ForMember(dest => dest.Driver, opt => opt.Ignore())
+                    .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<FuelRecord, FuelResponseDto>();
 
 
@@ -81,7 +86,8 @@ namespace LogisticsERP.API.Helpers
                 .ForMember(dest => dest.DriverName, opt => opt.MapFrom(src => src.Driver != null ? src.Driver.FullName : string.Empty))
                 .ForMember(dest => dest.VehicleNumber, opt => opt.MapFrom(src => src.Vehicle != null ? src.Vehicle.Number : string.Empty));
 
-
+            CreateMap<Vehicle, VehicleSummaryDto>();
+            CreateMap<Driver, DriverSummaryDto>();
         }
     }
 }

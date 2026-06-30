@@ -59,6 +59,8 @@ namespace LogisticsERP.API.Services
                     return Fail<FuelResponseDto>("Driver not found.");
 
                 var record = _mapper.Map<FuelRecord>(fuelCreateDto);
+                record.Vehicle = vehicle;  
+                record.Driver = driver;
                 await _genericRepo.AddAsync(record);
                 await _appContext.SaveChangesAsync();
 
@@ -111,7 +113,7 @@ namespace LogisticsERP.API.Services
         {
             try
             {
-                var record = await _genericRepo.GetByIdAsync(id);
+                var record = await _fuelRepo.GetByIdAsync(id);
                 if (record == null)
                     return Fail<FuelResponseDto>("Fuel record not found.");
 
@@ -142,7 +144,7 @@ namespace LogisticsERP.API.Services
         {
             try
             {
-                var records = await _genericRepo.GetAllAsync();
+                var records = await _fuelRepo.GetAll();
                 var result = _mapper.Map<List<FuelResponseDto>>(records);
                 return Ok(result, $"{result.Count} fuel record(s) found");
             }

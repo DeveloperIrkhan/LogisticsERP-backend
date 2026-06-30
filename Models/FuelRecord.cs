@@ -10,7 +10,7 @@ namespace LogisticsERP.API.Models
 
         public string VehicleId { get; set; } = string.Empty;
         [ForeignKey("VehicleId")]
-        public Vehicle Vehicle { get; set; } = new();
+        public Vehicle Vehicle { get; set; }
 
         public string DriverId { get; set; } = string.Empty;
         [ForeignKey("DriverId")]

@@ -51,6 +51,10 @@
         public string VehicleId { get; set; } = string.Empty;
         public string DriverId { get; set; } = string.Empty;
         public string? AddedBy { get; set; }
+
+        public VehicleSummaryDto? Vehicle { get; set; }
+        public DriverSummaryDto? Driver { get; set; }
+
         public DateTime FuelingDate { get; set; }
         public int OdoMeterReading { get; set; }
         public decimal Liters { get; set; }
@@ -88,5 +92,21 @@
         public int? AverageMileage { get; set; }
         public int TotalRecords { get; set; }
         public DateTime? LastFuelingDate { get; set; }
+    }
+
+
+
+    public class VehicleSummaryDto
+    {
+        public string VehicleId { get; set; } = string.Empty;
+        public string Number { get; set; } = string.Empty;
+        public string ModelName { get; set; } = string.Empty;
+        public string VehicleType { get; set; } = string.Empty;
+    }
+
+    public class DriverSummaryDto
+    {
+        public string DriverId { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
     }
 }

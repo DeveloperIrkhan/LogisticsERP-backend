@@ -13,6 +13,32 @@ namespace LogisticsERP.API.Repositories
         {
             _context = dbContext;
         }
+
+        public async Task<List<FuelRecord>> GetAll()
+        {
+            return await _context.FuelRecords
+                .Include(x => x.Driver)
+                .Include(x=> x.Vehicle)
+                .ToListAsync();
+        }
+
+        public async Task<FuelRecord> GetByIdAsync(string fuelId)
+        {
+            return await _context.FuelRecords
+                .Where(x => x.FuelId == fuelId)
+                 .Include(x => x.Driver)
+                 .Include(x => x.Vehicle)
+                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<FuelRecord?> GetLastRecordByVehicleAsync(string vehicleId)
+        {
+            return await _context.FuelRecords
+                         .Where(x => x.VehicleId == vehicleId)
+                         .OrderByDescending(x => x.FuelingDate)
+                         .FirstOrDefaultAsync();
+        }
+
         public async Task<List<FuelRecord>> GetByDateRangeAsync(DateTime from, DateTime to)
         {
             return await _context.FuelRecords
@@ -29,6 +55,7 @@ namespace LogisticsERP.API.Repositories
                        .ToListAsync();
         }
 
+       
         public async Task<List<FuelRecord>> GetByVehicleAsync(string vehicleId)
         {
             return await _context.FuelRecords
@@ -37,13 +64,7 @@ namespace LogisticsERP.API.Repositories
                         .ToListAsync();
         }
 
-        public async Task<FuelRecord?> GetLastRecordByVehicleAsync(string vehicleId)
-        {
-            return await _context.FuelRecords
-                         .Where(x => x.VehicleId == vehicleId)
-                         .OrderByDescending(x => x.FuelingDate)
-                         .FirstOrDefaultAsync();
-        }
+      
 
         public async Task<decimal> GetMonthlyCostAsync(int year, int month)
         {
