@@ -168,7 +168,7 @@ namespace LogisticsERP.API.Services
             }
         }
 
-        public async Task<ApiResponse<ExpiryAlertsDto>> GetExpiryAlertsAsync()
+        public async Task<ApiResponse<ExpiryAlertsResponseDto>> GetExpiryAlertsAsync()
         {
             try
             {
@@ -176,20 +176,33 @@ namespace LogisticsERP.API.Services
                 var in30Days = today.AddDays(30);
                 var in60Days = today.AddDays(60);
                 var vehicles = await _context.Vehicles.ToListAsync();
+                var drivers = await _context.Drivers.ToListAsync();
 
-
-                var alerts = new ExpiryAlertsDto();
+                var alerts = new VehicleExpiryAlertDto();
                 foreach (var vehicle in vehicles) 
                 {
-                    AddExpiryItem(alerts, vehicle.VehicleId, vehicle.Number, "Registeration", vehicle.RegistrationExpiry,today, in30Days, in60Days);
-                    AddExpiryItem(alerts, vehicle.VehicleId, vehicle.Number, "Insurance", vehicle.InsuranceExpiry, today, in30Days, in60Days);
-                    AddExpiryItem(alerts, vehicle.VehicleId, vehicle.Number, "Fittness", vehicle.FitnessExpiry,today, in30Days, in60Days);
+                    VehicleExpiryItem(alerts, vehicle.VehicleId, vehicle.Number, "Registeration", vehicle.RegistrationExpiry,today, in30Days, in60Days);
+                    VehicleExpiryItem(alerts, vehicle.VehicleId, vehicle.Number, "Insurance", vehicle.InsuranceExpiry, today, in30Days, in60Days);
+                    VehicleExpiryItem(alerts, vehicle.VehicleId, vehicle.Number, "Fittness", vehicle.FitnessExpiry,today, in30Days, in60Days);
                 }
-                return Ok(alerts, "Expiry alerts fetched successfully.");
+
+
+                var driverAlerts = new DriverExpiryAlertsDto();
+                foreach (var driver in drivers)
+                {
+                    DriverExpiryItem(driverAlerts, driver.DriverId, driver.FullName, driver.MobileNumber, "License Expiry", driver.DateOfJoining,driver.LicenseExpiry, today, in60Days, in30Days);
+                    DriverExpiryItem(driverAlerts, driver.DriverId, driver.FullName, driver.MobileNumber, "cnic Expiry", driver.DateOfJoining,driver.CnicExpiry, today, in60Days, in30Days);
+                }
+                var result = new ExpiryAlertsResponseDto
+                {
+                    VehicleExpiryAlerts = alerts,
+                    DriverExpiryAlerts = driverAlerts
+                };
+                return Ok(result, "Expiry alerts fetched successfully.");
             }
             catch(Exception exp)
             {
-                return Fail<ExpiryAlertsDto>(exp.InnerException?.Message ?? exp.Message);
+                return Fail<ExpiryAlertsResponseDto>(exp.InnerException?.Message ?? exp.Message);
             }
         }
 
@@ -228,12 +241,11 @@ namespace LogisticsERP.API.Services
             }
         }
 
-
         //Helper Function 
-        private void AddExpiryItem(ExpiryAlertsDto alerts, string vehicleId, string number, string type, DateTime expiry, DateTime today, DateTime in30, DateTime in60)
+        private void VehicleExpiryItem(VehicleExpiryAlertDto alerts, string vehicleId, string number, string type, DateTime expiry, DateTime today, DateTime in30, DateTime in60)
         {
             var days = (expiry-today).Days;
-            var item = new ExpiryItemDto
+            var vehicleItems = new VehicleExpiryItemDto
             {
                 VehicleId = vehicleId,
                 DaysRemaining = days,
@@ -242,13 +254,44 @@ namespace LogisticsERP.API.Services
                 VehicleNumber = number,
             };
 
+            if (expiry < today)
+                alerts.ExpiredVehicles.Add(vehicleItems);
+            else if (expiry <= in30)
+                alerts.VehicleExpiringIn30Days.Add(vehicleItems);
+            else if(expiry <= in60)
+                alerts.VehicleExpiringIn60Days.Add(vehicleItems);
+        }
+
+        private void DriverExpiryItem(
+            DriverExpiryAlertsDto alerts,
+            string DriverId, 
+            string FullName, 
+            string MobileNumber, 
+            string type, 
+            DateTime DateOfJoining, 
+            DateTime expiry, 
+            DateTime today, 
+            DateTime in30, 
+            DateTime in60)
+        {
+            var days = (expiry-today).Days;
+            var driverItems = new DriverExpiryItemDto
+            {
+                DriverId = DriverId,
+                DateOfJoining = DateOfJoining,
+                DaysRemaining = days,
+                ExpiryDate = expiry,
+                ExpiryType=type,
+                FullName=FullName,
+                MobileNumber=MobileNumber,
+            };
 
             if (expiry < today)
-                alerts.ExpiredVehicles.Add(item);
+                alerts.ExpiredDrivers.Add(driverItems);
             else if (expiry <= in30)
-                alerts.ExpiringIn30Days.Add(item);
+                alerts.ExpiringDriverIn30Days.Add(driverItems);
             else if(expiry <= in60)
-                alerts.ExpiringIn60Days.Add(item);
+                alerts.ExpiringDriverIn60Days.Add(driverItems);
         }
 
     }

@@ -9,8 +9,8 @@ namespace LogisticsERP.API.DTOs.Expense
         public DateTime ExpenseDate { get; set; }
         public ExpenseCategory ExpenseCategory { get; set; }
         public PaymentMode PaymentMode { get; set; }
-        public string UserId { get; set; } = string.Empty;
-        public string? VehicleId { get; set; }
+        public string? UserId { get; set; }
+        public string? VehicleId { get; set; } = null;
         public string? ReceiptNumber { get; set; }
         public string? Notes { get; set; }
     }
@@ -37,7 +37,7 @@ namespace LogisticsERP.API.DTOs.Expense
         public ExpenseCategory ExpenseCategory { get; set; }
         public PaymentMode PaymentMode { get; set; }
         public ExpenseStatus ExpenseStatus { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        public string? UserId { get; set; }
         public string? VehicleId { get; set; }
         public string? ReceiptNumber { get; set; }
         public string? Notes { get; set; }

@@ -4,6 +4,8 @@
     {
         Cash = 0,
         BankTransfer,
+        EasyPassa, 
+        JazzCash,
         CreditCard,
         MobilePayment,
         Other,

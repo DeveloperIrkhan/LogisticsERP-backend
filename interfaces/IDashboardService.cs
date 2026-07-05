@@ -7,7 +7,7 @@ namespace LogisticsERP.API.interfaces
     {
         Task<ApiResponse<DashboardSummaryDto>> GetSummaryAsync();
         Task<ApiResponse<VehicleStatsDto>> GetVehicleStatsAsync();
-        Task<ApiResponse<ExpiryAlertsDto>> GetExpiryAlertsAsync();
+        Task<ApiResponse<ExpiryAlertsResponseDto>> GetExpiryAlertsAsync();
         Task<ApiResponse<FuelAnalyticsDto>> GetFuelAnalyticsAsync();
         Task<ApiResponse<MaintenanceAnalyticsDto>> GetMaintenanceAnalyticsAsync();
         Task<ApiResponse<ExpenseAnalyticsDto>> GetExpenseAnalyticsAsync();

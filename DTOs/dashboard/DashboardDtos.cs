@@ -9,7 +9,7 @@
             public FuelAnalyticsDto FuelAnalytics { get; set; } = new();
             public MaintenanceAnalyticsDto MaintenanceAnalytics { get; set; } = new();
             public ExpenseAnalyticsDto ExpenseAnalytics { get; set; } = new();
-            public ExpiryAlertsDto ExpiryAlerts { get; set; } = new();
+            public ExpiryAlertsResponseDto ExpiryAlerts { get; set; } = new();
             public DriverStatsDto DriverStatsDto { get; set; } = new();
         }
 
@@ -35,18 +35,41 @@
             public int InActiveDrivers { get; set; }
         }
         // ─── EXPIRY ALERTS ────────────────────────────────────────
-        public class ExpiryAlertsDto
+        public class ExpiryAlertsResponseDto
         {
-            public List<ExpiryItemDto> ExpiredVehicles { get; set; } = new();
-            public List<ExpiryItemDto> ExpiringIn30Days { get; set; } = new();
-            public List<ExpiryItemDto> ExpiringIn60Days { get; set; } = new();
+            public VehicleExpiryAlertDto VehicleExpiryAlerts { get; set; } = new();
+            public DriverExpiryAlertsDto DriverExpiryAlerts { get; set; } = new();
+        }
+        public class VehicleExpiryAlertDto
+        {
+            public List<VehicleExpiryItemDto> ExpiredVehicles { get; set; } = new();
+            public List<VehicleExpiryItemDto> VehicleExpiringIn30Days { get; set; } = new();
+            public List<VehicleExpiryItemDto> VehicleExpiringIn60Days { get; set; } = new();
         }
 
-        public class ExpiryItemDto
+        public class DriverExpiryAlertsDto
         {
-            public string VehicleId { get; set; } = string.Empty;
-            public string VehicleNumber { get; set; } = string.Empty;
-            public string ExpiryType { get; set; } = string.Empty;  // Registration, Insurance, Fitness
+            public List<DriverExpiryItemDto> ExpiredDrivers { get; set; } = new();
+            public List<DriverExpiryItemDto> ExpiringDriverIn30Days { get; set; } = new();
+            public List<DriverExpiryItemDto> ExpiringDriverIn60Days { get; set; } = new();
+
+        }
+
+        public class VehicleExpiryItemDto
+        {
+            public string VehicleId { get; set; }
+            public string VehicleNumber { get; set; }
+            public string ExpiryType { get; set; }  // Registration, Insurance, Fitness
+            public DateTime ExpiryDate { get; set; }
+            public int DaysRemaining { get; set; }
+        }
+        public class DriverExpiryItemDto
+        {
+            public string DriverId { get; set; }
+            public string FullName { get; set; }
+            public string MobileNumber { get; set; }
+            public DateTime DateOfJoining { get; set; }
+            public string ExpiryType { get; set; }  // cnic, licnese, Fitness
             public DateTime ExpiryDate { get; set; }
             public int DaysRemaining { get; set; }
         }

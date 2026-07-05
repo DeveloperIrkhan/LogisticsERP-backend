@@ -7,6 +7,7 @@
         Duty,
         Insurance,
         Registration,
+        Lubricants,
         Repair,
         Other
     }

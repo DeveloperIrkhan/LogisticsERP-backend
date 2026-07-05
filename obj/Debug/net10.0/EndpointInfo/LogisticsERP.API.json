@@ -228,6 +228,10 @@
                   "CNIC": {
                     "type": "string"
                   },
+                  "CnicExpiry": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
                   "MobileNumber": {
                     "type": "string"
                   },
@@ -275,6 +279,9 @@
                   "style": "form"
                 },
                 "CNIC": {
+                  "style": "form"
+                },
+                "CnicExpiry": {
                   "style": "form"
                 },
                 "MobileNumber": {
@@ -400,6 +407,10 @@
                   "CNIC": {
                     "type": "string"
                   },
+                  "CnicExpiry": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
                   "MobileNumber": {
                     "type": "string"
                   },
@@ -450,6 +461,9 @@
                   "style": "form"
                 },
                 "CNIC": {
+                  "style": "form"
+                },
+                "CnicExpiry": {
                   "style": "form"
                 },
                 "MobileNumber": {
@@ -751,6 +765,29 @@
       }
     },
     "/api/Driver/expiring-licenses": {
+      "get": {
+        "tags": [
+          "Driver"
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Driver/expiring-cnic": {
       "get": {
         "tags": [
           "Driver"
@@ -4074,6 +4111,10 @@
             "type": "string",
             "nullable": true
           },
+          "cnicExpiry": {
+            "type": "string",
+            "format": "date-time"
+          },
           "mobileNumber": {
             "type": "string",
             "nullable": true
@@ -4289,6 +4330,7 @@
           "Duty",
           "Insurance",
           "Registration",
+          "Lubricants",
           "Repair",
           "Other"
         ],
@@ -4744,6 +4786,8 @@
         "enum": [
           "Cash",
           "BankTransfer",
+          "EasyPassa",
+          "JazzCash",
           "CreditCard",
           "MobilePayment",
           "Other",

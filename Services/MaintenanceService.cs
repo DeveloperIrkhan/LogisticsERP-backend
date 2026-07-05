@@ -53,6 +53,7 @@ namespace LogisticsERP.API.Services
                     return Fail<MaintenanceResponseDto>("Vehicle not found.");
 
                 var records = _mapper.Map<MaintenanceRecord>(dto);
+                records.Vehicle = vehicle;
                 await _mainGenReop.AddAsync(records);
                 await _context.SaveChangesAsync();
 

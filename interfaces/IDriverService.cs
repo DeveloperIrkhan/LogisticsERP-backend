@@ -35,6 +35,7 @@ namespace LogisticsERP.API.interfaces
 
         //alerts
         Task<ApiResponse<List<DriverResponseDto>>> GetExpiringLicensesAsync(int days);
+        Task<ApiResponse<List<DriverResponseDto>>> GetExpiringCnicAsync(int days);
 
 
 

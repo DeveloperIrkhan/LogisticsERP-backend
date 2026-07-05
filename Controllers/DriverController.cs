@@ -178,5 +178,13 @@ namespace LogisticsERP.API.Controllers
             var result = await _service.GetExpiringLicensesAsync(days);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+
+        [HttpGet("expiring-cnic")]
+        public async Task<IActionResult> GetExpiringCnic([FromQuery] int days = 30)
+        {
+            var result = await _service.GetExpiringLicensesAsync(days);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
     }
 }

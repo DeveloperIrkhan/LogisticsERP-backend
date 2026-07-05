@@ -8,6 +8,7 @@ namespace LogisticsERP.API.DTOs.Drivers
         public string? DriverId { get; set; } = string.Empty;
         public string? FullName { get; set; }
         public string? CNIC { get; set; } 
+        public DateTime CnicExpiry { get; set; }
         public string? MobileNumber { get; set; } 
         public string? Email { get; set; } 
         public string? Address { get; set; } 

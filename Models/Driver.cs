@@ -10,6 +10,7 @@ namespace LogisticsERP.API.Models
         public string DriverId { get; set; } = $"PRCS-DRV-{Guid.NewGuid()}";
         public string FullName { get; set; } = string.Empty;
         public string CNIC { get; set; } = string.Empty;
+        public DateTime CnicExpiry { get; set; }
         public string MobileNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;

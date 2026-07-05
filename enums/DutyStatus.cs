@@ -2,6 +2,6 @@
 {
     public enum DutyStatus
     {
-        Pending=1, InProgress, Completed, Cancelled, Approved
+        Pending, InProgress, Completed, Cancelled, Approved
     }
 }

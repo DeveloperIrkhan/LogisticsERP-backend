@@ -114,6 +114,7 @@ namespace LogisticsERP.API.Services
                 // Only update fields that are passed
                 if (dto.FullName != null) existingDriver.FullName = dto.FullName;
                 if (dto.CNIC != null) existingDriver.CNIC = dto.CNIC;
+                if (dto.CnicExpiry != null) existingDriver.CnicExpiry = dto.CnicExpiry;
                 if (dto.MobileNumber != null) existingDriver.MobileNumber = dto.MobileNumber;
                 if (dto.Email != null) existingDriver.Email = dto.Email;
                 if (dto.Address != null) existingDriver.Address = dto.Address;
@@ -144,7 +145,7 @@ namespace LogisticsERP.API.Services
         #endregion
 
         #region ASSIGNMENT
-        
+
         public async Task<ApiResponse<DriverResponseDto>> AssignDriver(string driverId, string vehicleId)
         {
             try
@@ -280,7 +281,7 @@ namespace LogisticsERP.API.Services
             }
         }
 
-         public async Task<ApiResponse<DriverDutyStatsDto>> GetDriverDutyStatsAsync(string driverId)
+        public async Task<ApiResponse<DriverDutyStatsDto>> GetDriverDutyStatsAsync(string driverId)
         {
             try
             {
@@ -331,7 +332,7 @@ namespace LogisticsERP.API.Services
                 return Ok(!isOnDuty, isOnDuty ? "Driver is currently on duty." : "Driver is available.");
             }
             catch (Exception ex)
-            { 
+            {
                 return Fail<bool>(ex.InnerException?.Message ?? ex.Message);
             }
         }
@@ -352,6 +353,26 @@ namespace LogisticsERP.API.Services
 
                 var result = _mapper.Map<List<DriverResponseDto>>(drivers);
                 return Ok(result, $"{result.Count} driver(s) with license expiring in {days} days.");
+            }
+            catch (Exception ex)
+            {
+                return Fail<List<DriverResponseDto>>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+        public async Task<ApiResponse<List<DriverResponseDto>>> GetExpiringCnicAsync(int days)
+        {
+            try
+            {
+                var today = DateTime.UtcNow;
+                var target = today.AddDays(days);
+
+                var drivers = await _context.Drivers
+                    .Where(x => x.CnicExpiry >= today && x.CnicExpiry <= target)
+                    .OrderBy(x => x.CnicExpiry)
+                    .ToListAsync();
+
+                var result = _mapper.Map<List<DriverResponseDto>>(drivers);
+                return Ok(result, $"{result.Count} driver(s) with CNIC expiring in {days} days.");
             }
             catch (Exception ex)
             {

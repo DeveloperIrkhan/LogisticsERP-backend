@@ -20,11 +20,11 @@ namespace LogisticsERP.API.Models
         public string? ReceiptNumber { set; get; }
         public string? ApprovedBy { get; set; }
         // Navigation properties
-        public string UserId { get; set; } = string.Empty;
-        [ForeignKey("UserId")]
+        public string? UserId { get; set; } 
+        [ForeignKey(nameof(UserId))]
         public User? User { get; set; }
-        public string? VehicleId { get; set; }
-        [ForeignKey("VehicleId")]
+        public string? VehicleId { get; set; } 
+        [ForeignKey(nameof(VehicleId))]
         public Vehicle? Vehicle { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
