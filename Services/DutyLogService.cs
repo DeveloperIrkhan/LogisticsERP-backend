@@ -195,7 +195,6 @@ namespace LogisticsERP.API.Services
                 var duty = await _genericRepo.GetByIdAsync(dutyId);
                 if (duty == null)
                     return Fail<DutyResponseDto>("Duty not found.");
-
                 if(duty.Status == DutyStatus.InProgress)
                     return Fail<DutyResponseDto>("Duty already in progress.");
                 if(duty.Status == DutyStatus.Completed)
@@ -238,13 +237,11 @@ namespace LogisticsERP.API.Services
 
                 if (dto.Remarks != null)
                     duty.Remarks = dto.Remarks;
-
-
+                
                 await _genericRepo.Update(duty);
                 await _context.SaveChangesAsync();
 
                 return Ok(_mapper.Map<DutyResponseDto>(duty), "Duty started successfully.");
-            
             }
              catch (Exception ex)
             {
@@ -297,7 +294,7 @@ namespace LogisticsERP.API.Services
             {
                 if (from > to)
                     return Fail<List<DutyResponseDto>>("'From' date cannot be greater than 'To' date.");
-
+                
                 var duties = await _dutyRepo.GetByDateRangeAsync(from, to);
                 var result = _mapper.Map<List<DutyResponseDto>>(duties);
                 return Ok(result, $"{result.Count} duty record(s) found.");

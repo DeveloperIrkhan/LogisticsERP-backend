@@ -2,8 +2,6 @@
 using LogisticsERP.API.DTOs.Vehicle;
 using LogisticsERP.API.enums;
 using LogisticsERP.API.interfaces;
-using LogisticsERP.API.Models;
-using LogisticsERP.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticsERP.API.Controllers
@@ -178,7 +176,6 @@ namespace LogisticsERP.API.Controllers
             var result = await _service.GetExpiringLicensesAsync(days);
             return result.Success ? Ok(result) : BadRequest(result);
         }
-
 
         [HttpGet("expiring-cnic")]
         public async Task<IActionResult> GetExpiringCnic([FromQuery] int days = 30)
