@@ -122,7 +122,7 @@ namespace LogisticsERP.API.Controllers
 
         #region drivers-list
         [HttpGet("drivers-list-for-specfic-vehicle/{vehicleId}")]
-        public async Task<IActionResult> DriverList([FromRoute]string vehicleId)
+        public async Task<IActionResult> DriverList([FromRoute] string vehicleId)
         {
             var result = await _service.DriverListAssignedToSpecficVehicle(vehicleId);
             return result.Success ? Ok(result) : NotFound(result);
@@ -139,21 +139,25 @@ namespace LogisticsERP.API.Controllers
         }
         #endregion
 
-        
+        #region get drivers by status
         [HttpGet("drivers-by-status")]
         public async Task<IActionResult> GetDriversByStatus([FromQuery] DriverStatus status)
         {
             var result = await _service.GetDriversByStatusAsync(status);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+        #endregion
 
+        #region is driver avaliable?
         [HttpGet("is-available/{driverId}")]
         public async Task<IActionResult> IsDriverAvailable([FromRoute] string driverId)
         {
             var result = await _service.IsDriverAvailableAsync(driverId);
             return result.Success ? Ok(result) : NotFound(result);
         }
+        #endregion
 
+        #region change status
         [HttpPut("change-status/{driverId}")]
         public async Task<IActionResult> ChangeStatus([FromRoute] string driverId, [FromQuery] DriverStatus status)
         {
@@ -161,27 +165,33 @@ namespace LogisticsERP.API.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        // ── DUTY TRACKING ─────────────────────────────────────────
+        #endregion
+
+        #region get dirver duty stats by id
         [HttpGet("duty-stats/{driverId}")]
         public async Task<IActionResult> GetDutyStats([FromRoute] string driverId)
         {
             var result = await _service.GetDriverDutyStatsAsync(driverId);
             return result.Success ? Ok(result) : NotFound(result);
         }
+        #endregion
 
-        // ── ALERTS ────────────────────────────────────────────────
+        #region expiry licenses
         [HttpGet("expiring-licenses")]
         public async Task<IActionResult> GetExpiringLicenses([FromQuery] int days = 30)
         {
             var result = await _service.GetExpiringLicensesAsync(days);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+        #endregion
 
+        #region expiry cnic
         [HttpGet("expiring-cnic")]
         public async Task<IActionResult> GetExpiringCnic([FromQuery] int days = 30)
         {
             var result = await _service.GetExpiringLicensesAsync(days);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+        #endregion
     }
 }

@@ -231,9 +231,9 @@ namespace LogisticsERP.API.Services
                 duty.KillometerIn = dto.KillometerIn;
 
                 if (duty.KillometerOut.HasValue)
-                    duty.TotalKm = dto.KillometerIn - duty.KillometerOut.Value;
+                    duty.TotalKm = duty.KillometerOut.Value- dto.KillometerIn;
 
-                duty.TotalHours = (decimal)(dto.DateIn - duty.DateOut).TotalHours;
+                duty.TotalHours = (decimal)(duty.DateOut-dto.DateIn).TotalHours;
 
                 if (dto.Remarks != null)
                     duty.Remarks = dto.Remarks;
