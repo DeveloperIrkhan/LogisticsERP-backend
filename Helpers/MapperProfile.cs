@@ -4,6 +4,7 @@ using LogisticsERP.API.DTOs.Drivers;
 using LogisticsERP.API.DTOs.DutyLogs;
 using LogisticsERP.API.DTOs.Expense;
 using LogisticsERP.API.DTOs.Fuel;
+using LogisticsERP.API.DTOs.Item;
 using LogisticsERP.API.DTOs.Maintenance;
 using LogisticsERP.API.DTOs.Overtime;
 using LogisticsERP.API.DTOs.Roster;
@@ -88,6 +89,26 @@ namespace LogisticsERP.API.Helpers
 
             CreateMap<Vehicle, VehicleSummaryDto>();
             CreateMap<Driver, DriverSummaryDto>();
+
+
+            //mapping Item to ItemDtos
+            CreateMap<ItemCreateDto, Item>()
+                .ForMember(dest => dest.CurrentStock, opt => opt.Ignore());
+            CreateMap<ItemUpdateDto, Item>()
+                .ForAllMembers(option => option.Condition((src, dest, srcMember) => src != null));
+            CreateMap<Item, ItemResponseDto>();
+
+
+
+            CreateMap<ItemPurchaseCreateDto, ItemPurchase>()
+                .ForMember(dest => dest.Item, opt => opt.Ignore())
+                .ForMember(dest => dest.User, opt => opt.Ignore())
+                .ForMember(dest => dest.Vehicle, opt => opt.Ignore());
+
+            CreateMap<ItemSaleCreateDto, ItemSale>()
+                .ForMember(dest => dest.Item, opt => opt.Ignore())
+                .ForMember(dest => dest.Vehicle, opt => opt.Ignore())
+                .ForMember(dest => dest.User, opt => opt.Ignore());
         }
     }
 }
