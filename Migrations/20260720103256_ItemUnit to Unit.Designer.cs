@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LogisticsERP.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260703163756_Expense table userId and vehicleId nullable")]
-    partial class ExpensetableuserIdandvehicleIdnullable
+    [Migration("20260720103256_ItemUnit to Unit")]
+    partial class ItemUnittoUnit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,9 @@ namespace LogisticsERP.API.Migrations
                     b.Property<string>("CNIC")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("CnicExpiry")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -415,6 +418,165 @@ namespace LogisticsERP.API.Migrations
                     b.HasIndex("VehicleId");
 
                     b.ToTable("FuelRecords");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.Item", b =>
+                {
+                    b.Property<string>("ItemId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("CurrentStock")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ItemCategory")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ItemUnit")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("ReorderLevel")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("ItemId");
+
+                    b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.ItemPurchase", b =>
+                {
+                    b.Property<string>("ItemPurchaseId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentMode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SupplierName")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("VehicleId")
+                        .HasColumnType("text");
+
+                    b.HasKey("ItemPurchaseId");
+
+                    b.HasIndex("AddedBy");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("ItemPurchases");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.ItemSale", b =>
+                {
+                    b.Property<string>("ItemSaleId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BuyerName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentMode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("SaleDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("VehicleId")
+                        .HasColumnType("text");
+
+                    b.HasKey("ItemSaleId");
+
+                    b.HasIndex("AddedBy");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("ItemSales");
                 });
 
             modelBuilder.Entity("LogisticsERP.API.Models.MaintenanceRecord", b =>
@@ -800,6 +962,56 @@ namespace LogisticsERP.API.Migrations
                     b.Navigation("Vehicle");
                 });
 
+            modelBuilder.Entity("LogisticsERP.API.Models.ItemPurchase", b =>
+                {
+                    b.HasOne("LogisticsERP.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("AddedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("LogisticsERP.API.Models.Item", "Item")
+                        .WithMany("ItemPurchase")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LogisticsERP.API.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Item");
+
+                    b.Navigation("User");
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.ItemSale", b =>
+                {
+                    b.HasOne("LogisticsERP.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("AddedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("LogisticsERP.API.Models.Item", "Item")
+                        .WithMany("Sales")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LogisticsERP.API.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Item");
+
+                    b.Navigation("User");
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("LogisticsERP.API.Models.MaintenanceRecord", b =>
                 {
                     b.HasOne("LogisticsERP.API.Models.Driver", "Driver")
@@ -882,6 +1094,13 @@ namespace LogisticsERP.API.Migrations
             modelBuilder.Entity("LogisticsERP.API.Models.DutyRoster", b =>
                 {
                     b.Navigation("Entries");
+                });
+
+            modelBuilder.Entity("LogisticsERP.API.Models.Item", b =>
+                {
+                    b.Navigation("ItemPurchase");
+
+                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("LogisticsERP.API.Models.Role", b =>

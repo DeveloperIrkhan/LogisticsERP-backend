@@ -9,7 +9,7 @@ namespace LogisticsERP.API.Models
         [Key]
         public string ItemPurchaseId { get; set; } = $"PRCS-PUR-{Guid.NewGuid()}";
 
-        public string ItemId { get; set; } = string.Empty;
+        public string ItemId { get; set; }
         [ForeignKey(nameof(ItemId))]
         public Item Item { get; set; } = new();
 

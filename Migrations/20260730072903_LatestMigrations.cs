@@ -5,7 +5,7 @@
 namespace LogisticsERP.API.Migrations
 {
     /// <inheritdoc />
-    public partial class ExpensetableuserIdandvehicleIdnullable : Migration
+    public partial class LatestMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -167,3 +167,11 @@ E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\runt
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\runtimes\win-x64\native\qpdf.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\runtimes\win-x86\native\QuestPdfSkia.dll
 E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\runtimes\win-x86\native\qpdf.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\BCrypt.Net-Core.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\libman.json
+E:\WorkSpace\prcs Logistics  ERP\backend\LogisticsERP.API\bin\Debug\net10.0\BouncyCastle.Crypto.dll

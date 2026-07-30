@@ -12,7 +12,7 @@ namespace LogisticsERP.API.DTOs.Item
         public string? InvoiceNumber { get; set; }
         public PaymentMode PaymentMode { get; set; }
         public string? VehicleId { get; set; } = null;
-        public string? AddedBy { get; set; }
+        public string? AddedBy { get; set; } = null;
         public string? Notes { get; set; }
     }
 
@@ -32,8 +32,8 @@ namespace LogisticsERP.API.DTOs.Item
 
     public class ItemPurchaseResponseDto
     {
-        public string ItemPurchaseId { get; set; } = string.Empty;
-        public string ItemId { get; set; } = string.Empty;
+        public string ItemPurchaseId { get; set; } 
+        public string ItemId { get; set; }
         public string ItemName { get; set; } = string.Empty;
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }
@@ -43,10 +43,10 @@ namespace LogisticsERP.API.DTOs.Item
         public string? InvoiceNumber { get; set; }
         public PaymentMode PaymentMode { get; set; }
         public ItemTransactionStatus Status { get; set; }
-        public string? VehicleId { get; set; }
-        public string? AddedBy { get; set; }
-        public string? ApprovedBy { get; set; }
-        public string? Notes { get; set; }
+        public string? VehicleId { get; set; } = null;
+        public string? AddedBy { get; set; } = null;
+        public string? ApprovedBy { get; set; } = null;
+        public string? Notes { get; set; } = null;
         public DateTime CreatedAt { get; set; }
     }
 

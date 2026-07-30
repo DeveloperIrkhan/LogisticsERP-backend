@@ -22,6 +22,9 @@ namespace LogisticsERP.API.Data
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemPurchase> ItemPurchases { get; set; }
         public DbSet<ItemSale> ItemSales { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Driver>()
@@ -134,7 +137,8 @@ namespace LogisticsERP.API.Data
                 .Property(x => x.ItemCategory)
                 .HasConversion<string>();
             modelBuilder.Entity<Item>()
-                .Property(x => x.Unit)
+                .Property(x => x.ItemUnit
+                )
                 .HasConversion<string>();
             modelBuilder.Entity<Item>()
                 .Property(x => x.CreatedAt)
@@ -196,6 +200,53 @@ namespace LogisticsERP.API.Data
                 .HasForeignKey(x => x.AddedBy)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            // ── Auth: RefreshToken / PasswordResetToken ─────────────
+
+            modelBuilder.Entity<User>()
+                .Property(x => x.CreatedAt)
+                .HasColumnType("timestamp with time zone");
+            modelBuilder.Entity<User>()
+                .Property(x => x.ApprovedAt)
+                .HasColumnType("timestamp with time zone");
+            modelBuilder.Entity<User>()
+                .HasIndex(x => x.UserName)
+                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(x => x.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<RefreshToken>()
+                .HasIndex(x => x.Token)
+                .IsUnique();
+            modelBuilder.Entity<RefreshToken>()
+                .Property(x => x.ExpiresAt)
+                .HasColumnType("timestamp with time zone");
+            modelBuilder.Entity<RefreshToken>()
+                .Property(x => x.CreatedAt)
+                .HasColumnType("timestamp with time zone");
+            modelBuilder.Entity<RefreshToken>()
+                .Property(x => x.RevokedAt)
+                .HasColumnType("timestamp with time zone");
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(x => x.User)
+                .WithMany(u => u.RefreshTokens)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PasswordResetToken>()
+                .HasIndex(x => x.Token)
+                .IsUnique();
+            modelBuilder.Entity<PasswordResetToken>()
+                .Property(x => x.ExpiresAt)
+                .HasColumnType("timestamp with time zone");
+            modelBuilder.Entity<PasswordResetToken>()
+                .Property(x => x.CreatedAt)
+                .HasColumnType("timestamp with time zone");
+            modelBuilder.Entity<PasswordResetToken>()
+                .HasOne(x => x.User)
+                .WithMany(u => u.PasswordResetTokens)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

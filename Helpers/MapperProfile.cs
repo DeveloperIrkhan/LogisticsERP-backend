@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LogisticsERP.API.DTOs.Auth;
 using LogisticsERP.API.DTOs.Documents;
 using LogisticsERP.API.DTOs.Drivers;
 using LogisticsERP.API.DTOs.DutyLogs;
@@ -19,9 +20,8 @@ namespace LogisticsERP.API.Helpers
         public MapperProfile()
         {
             //CreateMap<User, UserResponseDto>().ReverseMap();
-            CreateMap<User, UserResponseDto>();
-            CreateMap<UserCreateDto, User>();
-            CreateMap<UserUpdateDto, User>();
+            CreateMap<User, AuthResponseDto>().ReverseMap();
+            CreateMap<RegisterDto, User>();
 
             //mapping vehicle into vehicleresponsedto
             CreateMap<Vehicle, VehicleResponseDto>();

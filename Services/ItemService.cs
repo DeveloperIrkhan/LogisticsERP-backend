@@ -66,11 +66,11 @@ namespace LogisticsERP.API.Services
 
                 if (dto.ItemName != null) item.ItemName = dto.ItemName;
                 if (dto.ItemCategory.HasValue) item.ItemCategory = dto.ItemCategory.Value;
-                if (dto.Unit.HasValue) item.Unit = dto.Unit.Value;
+                if (dto.ItemUnit.HasValue) item.ItemUnit = dto.ItemUnit.Value;
                 if (dto.ReorderLevel.HasValue) item.ReorderLevel = dto.ReorderLevel.Value;
                 if (dto.Description != null) item.Description = dto.Description;
                 if (dto.IsActive.HasValue) item.IsActive = dto.IsActive.Value;
-
+                if (dto.CurrentStock != 0) item.CurrentStock = dto.CurrentStock;
                 await _genericRepo.Update(item);
                 await _context.SaveChangesAsync();
 
@@ -198,7 +198,7 @@ namespace LogisticsERP.API.Services
                     ItemId = x.ItemId,
                     ItemName = x.ItemName,
                     ItemCategory = x.ItemCategory,
-                    Unit = x.Unit,
+                    ItemUnit = x.ItemUnit,
                     CurrentStock = x.CurrentStock,
                     ReorderLevel = x.ReorderLevel,
                     IsLowStock = x.ReorderLevel.HasValue && x.CurrentStock <= x.ReorderLevel.Value,

@@ -45,7 +45,7 @@ namespace LogisticsERP.API.Services
 
                 var purchase = _mapper.Map<ItemPurchase>(dto);
                 purchase.TotalAmount = dto.Quantity * dto.UnitPrice;
-                purchase.Status = ItemTransactionStatus.Pending;
+                 purchase.Status = ItemTransactionStatus.Pending;
 
                 await _genericRepo.AddAsync(purchase);
                 await _context.SaveChangesAsync();

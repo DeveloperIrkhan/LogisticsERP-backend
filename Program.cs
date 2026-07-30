@@ -7,6 +7,9 @@ using LogisticsERP.API.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 
@@ -37,6 +40,32 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader();
         });
 });
+// ── JWT Authentication ──────────────────────────────────────
+var jwtSecret = builder.Configuration["JwtSettings:Secret"]
+    ?? throw new InvalidOperationException("JwtSettings:Secret is not configured.");
+var jwtIssuer = builder.Configuration["JwtSettings:Issuer"] ?? "LogisticsERP.API";
+var jwtAudience = builder.Configuration["JwtSettings:Audience"] ?? "LogisticsERP.Client";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtIssuer,
+        ValidateAudience = true,
+        ValidAudience = jwtAudience,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(1),
+    };
+});
+builder.Services.AddAuthorization();
 
 
 // Add services to the container.
@@ -47,13 +76,20 @@ builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
-builder.Services.AddScoped<IFuelService,FuelService>();
+builder.Services.AddScoped<IFuelService, FuelService>();
 builder.Services.AddScoped<IDutyLogService, DutyLogService>();
 builder.Services.AddScoped<IOvertimeService, OvertimeService>();
 builder.Services.AddScoped<IExpenseService, ExpenseService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IReportService, ReportService>();
-
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IItemPurchaseService, ItemPurchaseService>();
+builder.Services.AddScoped<ItemSaleService, ItemSaleService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IRosterService, RosterService>();
 builder.Services.AddScoped<IGenericRepo<DutyRoster>, GenericRepo<DutyRoster>>();
 // Add repositories to the container
@@ -66,6 +102,9 @@ builder.Services.AddScoped<IDriverRepo, DriverRepo>();
 builder.Services.AddScoped<IMaintenanceRepo, MaintenanceRepo>();
 builder.Services.AddScoped<IFuelRepo, FuelRepo>();
 builder.Services.AddScoped<IOvertimeRepo, OvertimeRepo>();
+builder.Services.AddScoped<IItemRepo, ItemRepo>();
+builder.Services.AddScoped<IItemPurchaseRepo, ItemPurchaseRepo>();
+builder.Services.AddScoped<IItemSaleRepo, ItemSaleRepo>();
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(_mapper => _mapper.AddProfile<MapperProfile>()
@@ -80,7 +119,7 @@ builder.Services.AddControllers()
       {
           options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
           options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); 
+          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
       });
 builder.Services.AddDbContext<AppDbContext>
 (options => options.UseNpgsql(connectionString));
@@ -100,7 +139,39 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
-app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapControllers();
+// Apply any pending EF migrations automatically, then seed default roles + a
+// default Admin account so there's someone who can log in and approve the
+// first sign-ups. Change the DefaultAdmin password after first login.
+// Wrapped in try/catch + logging so a DB problem is visible in the console
+// instead of silently crashing the app before it starts listening.
+
+using (var scope = app.Services.CreateScope())
+{
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        var pendingMigrations = (await db.Database.GetPendingMigrationsAsync()).ToList();
+        if (pendingMigrations.Count > 0)
+        {
+            logger.LogInformation("Applying {Count} pending migration(s): {Migrations}",
+                pendingMigrations.Count, string.Join(", ", pendingMigrations));
+            await db.Database.MigrateAsync();
+        }
+
+        await DataSeeder.SeedAsync(db, app.Configuration, logger);
+        logger.LogInformation("Startup seeding completed (roles + default admin check).");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Startup migration/seeding failed. The API will still start, " +
+            "but auth-related tables/data may be missing until this is fixed.");
+    }
+
+}
 app.Run();
 

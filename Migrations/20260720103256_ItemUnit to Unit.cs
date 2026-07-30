@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LogisticsERP.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class ItemUnittoUnit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,6 +28,25 @@ namespace LogisticsERP.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DutyRosters", x => x.RosterId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Items",
+                columns: table => new
+                {
+                    ItemId = table.Column<string>(type: "text", nullable: false),
+                    ItemName = table.Column<string>(type: "text", nullable: false),
+                    ItemCategory = table.Column<string>(type: "text", nullable: false),
+                    ItemUnit = table.Column<string>(type: "text", nullable: false),
+                    CurrentStock = table.Column<decimal>(type: "numeric", nullable: false),
+                    ReorderLevel = table.Column<decimal>(type: "numeric", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Items", x => x.ItemId);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,6 +122,7 @@ namespace LogisticsERP.API.Migrations
                     DriverId = table.Column<string>(type: "text", nullable: false),
                     FullName = table.Column<string>(type: "text", nullable: false),
                     CNIC = table.Column<string>(type: "text", nullable: false),
+                    CnicExpiry = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     MobileNumber = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
@@ -112,7 +132,6 @@ namespace LogisticsERP.API.Migrations
                     LicenseExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     typeOfLicence = table.Column<string>(type: "text", nullable: false),
                     DateOfJoining = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Salary = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -165,7 +184,7 @@ namespace LogisticsERP.API.Migrations
                     Notes = table.Column<string>(type: "text", nullable: true),
                     ReceiptNumber = table.Column<string>(type: "text", nullable: true),
                     ApprovedBy = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true),
                     VehicleId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -176,13 +195,98 @@ namespace LogisticsERP.API.Migrations
                         name: "FK_Expenses_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                     table.ForeignKey(
                         name: "FK_Expenses_Vehicles_VehicleId",
                         column: x => x.VehicleId,
                         principalTable: "Vehicles",
                         principalColumn: "VehicleId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemPurchases",
+                columns: table => new
+                {
+                    ItemPurchaseId = table.Column<string>(type: "text", nullable: false),
+                    ItemId = table.Column<string>(type: "text", nullable: false),
+                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    PurchaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SupplierName = table.Column<string>(type: "text", nullable: true),
+                    InvoiceNumber = table.Column<string>(type: "text", nullable: true),
+                    PaymentMode = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: true),
+                    VehicleId = table.Column<string>(type: "text", nullable: true),
+                    AddedBy = table.Column<string>(type: "text", nullable: true),
+                    ApprovedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemPurchases", x => x.ItemPurchaseId);
+                    table.ForeignKey(
+                        name: "FK_ItemPurchases_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "ItemId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ItemPurchases_Users_AddedBy",
+                        column: x => x.AddedBy,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_ItemPurchases_Vehicles_VehicleId",
+                        column: x => x.VehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "VehicleId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemSales",
+                columns: table => new
+                {
+                    ItemSaleId = table.Column<string>(type: "text", nullable: false),
+                    ItemId = table.Column<string>(type: "text", nullable: false),
+                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    SaleDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    BuyerName = table.Column<string>(type: "text", nullable: true),
+                    InvoiceNumber = table.Column<string>(type: "text", nullable: true),
+                    PaymentMode = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: true),
+                    VehicleId = table.Column<string>(type: "text", nullable: true),
+                    AddedBy = table.Column<string>(type: "text", nullable: true),
+                    ApprovedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemSales", x => x.ItemSaleId);
+                    table.ForeignKey(
+                        name: "FK_ItemSales_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "ItemId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ItemSales_Users_AddedBy",
+                        column: x => x.AddedBy,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_ItemSales_Vehicles_VehicleId",
+                        column: x => x.VehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "VehicleId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -370,7 +474,7 @@ namespace LogisticsERP.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OvertimeDuties",
+                name: "OvertimeDuty",
                 columns: table => new
                 {
                     OvertimeDutyId = table.Column<string>(type: "text", nullable: false),
@@ -383,27 +487,27 @@ namespace LogisticsERP.API.Migrations
                     TotalAmount = table.Column<decimal>(type: "numeric", nullable: true),
                     Reason = table.Column<string>(type: "text", nullable: true),
                     Notes = table.Column<string>(type: "text", nullable: true),
-                    ApprovedBy = table.Column<string>(type: "text", nullable: false),
+                    ApprovedBy = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OvertimeDuties", x => x.OvertimeDutyId);
+                    table.PrimaryKey("PK_OvertimeDuty", x => x.OvertimeDutyId);
                     table.ForeignKey(
-                        name: "FK_OvertimeDuties_Drivers_DriverId",
+                        name: "FK_OvertimeDuty_Drivers_DriverId",
                         column: x => x.DriverId,
                         principalTable: "Drivers",
                         principalColumn: "DriverId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OvertimeDuties_DutyLogs_DutyLogDutyId",
+                        name: "FK_OvertimeDuty_DutyLogs_DutyLogDutyId",
                         column: x => x.DutyLogDutyId,
                         principalTable: "DutyLogs",
                         principalColumn: "DutyId");
                     table.ForeignKey(
-                        name: "FK_OvertimeDuties_Users_UserId",
+                        name: "FK_OvertimeDuty_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
@@ -470,6 +574,36 @@ namespace LogisticsERP.API.Migrations
                 column: "VehicleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ItemPurchases_AddedBy",
+                table: "ItemPurchases",
+                column: "AddedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemPurchases_ItemId",
+                table: "ItemPurchases",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemPurchases_VehicleId",
+                table: "ItemPurchases",
+                column: "VehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemSales_AddedBy",
+                table: "ItemSales",
+                column: "AddedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemSales_ItemId",
+                table: "ItemSales",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemSales_VehicleId",
+                table: "ItemSales",
+                column: "VehicleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MaintenanceRecords_DriverId",
                 table: "MaintenanceRecords",
                 column: "DriverId");
@@ -485,18 +619,18 @@ namespace LogisticsERP.API.Migrations
                 column: "VehicleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OvertimeDuties_DriverId",
-                table: "OvertimeDuties",
+                name: "IX_OvertimeDuty_DriverId",
+                table: "OvertimeDuty",
                 column: "DriverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OvertimeDuties_DutyLogDutyId",
-                table: "OvertimeDuties",
+                name: "IX_OvertimeDuty_DutyLogDutyId",
+                table: "OvertimeDuty",
                 column: "DutyLogDutyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OvertimeDuties_UserId",
-                table: "OvertimeDuties",
+                name: "IX_OvertimeDuty_UserId",
+                table: "OvertimeDuty",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -523,16 +657,25 @@ namespace LogisticsERP.API.Migrations
                 name: "FuelRecords");
 
             migrationBuilder.DropTable(
+                name: "ItemPurchases");
+
+            migrationBuilder.DropTable(
+                name: "ItemSales");
+
+            migrationBuilder.DropTable(
                 name: "MaintenanceRecords");
 
             migrationBuilder.DropTable(
-                name: "OvertimeDuties");
+                name: "OvertimeDuty");
 
             migrationBuilder.DropTable(
                 name: "VehicleDocuments");
 
             migrationBuilder.DropTable(
                 name: "DutyRosters");
+
+            migrationBuilder.DropTable(
+                name: "Items");
 
             migrationBuilder.DropTable(
                 name: "DutyLogs");

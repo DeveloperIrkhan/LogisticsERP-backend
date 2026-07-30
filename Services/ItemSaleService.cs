@@ -43,7 +43,7 @@ namespace LogisticsERP.API.Services
                     return Fail<ItemSaleResponseDto>("Selected Item was not found in catalog.");
                 if (item.CurrentStock < dto.Quantity)
                     return Fail<ItemSaleResponseDto>($"Insufficient stock. Available:" +
-                        $" {item.CurrentStock} {item.Unit}, requested: {dto.Quantity}.");
+                        $" {item.CurrentStock} {item.ItemUnit}, requested: {dto.Quantity}.");
 
                 var sale = _mapper.Map<ItemSale>(dto);
                 sale.TotalAmount = dto.Quantity * dto.UnitPrice;
@@ -193,7 +193,7 @@ namespace LogisticsERP.API.Services
                     return Fail<ItemSaleResponseDto>("Related item no longer existed in the catalog.");
 
                 if (item.CurrentStock < sale.Quantity)
-                    return Fail<ItemSaleResponseDto>($"Insufficient stock to approve this sale. Available: {item.CurrentStock} {item.Unit}, requested: {sale.Quantity}.");
+                    return Fail<ItemSaleResponseDto>($"Insufficient stock to approve this sale. Available: {item.CurrentStock} {item.ItemUnit}, requested: {sale.Quantity}.");
 
 
                 sale.Status = ItemTransactionStatus.Approved;

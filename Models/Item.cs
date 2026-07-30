@@ -11,7 +11,7 @@ namespace LogisticsERP.API.Models
         [Required]
         public string ItemName { get; set; } = string.Empty;
         public ItemCategory ItemCategory { get; set; }
-        public ItemUnit Unit { get; set; }
+        public ItemUnit ItemUnit { get; set; }
         public decimal CurrentStock { get; set; }
         //When stock drops to 10L or below → system triggers an alert to reorder
         public decimal? ReorderLevel { get; set; }
