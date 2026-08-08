@@ -1,4 +1,5 @@
-﻿using LogisticsERP.API.Data;
+﻿using CloudinaryDotNet;
+using LogisticsERP.API.Data;
 using LogisticsERP.API.DTOs.Auth;
 using LogisticsERP.API.enums;
 using LogisticsERP.API.Helpers;
@@ -32,51 +33,36 @@ namespace LogisticsERP.API.Services
         {
             try
             {
-                var userNameTaken = await _context.Users.AnyAsync(u => u.UserName.ToLower() == dto.Username.ToLower());
-                if (userNameTaken)
-                    return Fail<UserAuthDto>("This username is already taken.");
+                var result = await CreateUserAccountAsync(dto, RoleNames.DefaultSignupRole, UserStatus.Pending,
+                    mustChangePassword: false, avator);
 
-                var emailTaken = await _context.Users.AnyAsync(u => u.Email.ToLower() == dto.Email.ToLower());
-                if (emailTaken)
-                    return Fail<UserAuthDto>("An account with this email already exists.");
-
-                var defaultRole = await _context.UserRole
-                    .FirstOrDefaultAsync(r => r.RoleName == RoleNames.DefaultSignupRole);
-                if (defaultRole == null)
-                    return Fail<UserAuthDto>("Signup is temporarily unavailable — default role is not configured. Please contact an admin.");
-                var user = new User
+                if (!result.Success)
                 {
-                    UserName = dto.Username,
-                    FullName = dto.Fullname,
-                    Email = dto.Email,
-                    ProfilePictureUrl = avator ?? "",
-                    PhoneNumber = dto.PhoneNumber,
-                    Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                    Status = UserStatus.Pending,
-                    RoleId = defaultRole.RoleId,
-                };
-
-                await _context.Users.AddAsync(user);
-                await _context.SaveChangesAsync();
-
-                var result = new UserAuthDto
-                {
-                    UserId = user.UserId,
-                    UserName = user.UserName,
-                    FullName = user.FullName,
-                    Email = user.Email,
-                    ProfilePictureUrl = user.ProfilePictureUrl,
-                    RoleId = defaultRole.RoleId,
-                    RoleName = defaultRole.RoleName,
-                };
-
-                return Ok(result, "Registration successful! Your account is pending admin approval — you'll be able to log in once approved.");
+                    return Fail<UserAuthDto>(result.Message);
+                }
+                return Ok(result.Data!, "Registration successful! Your account is pending admin approval — you'll be able to log in once approved.");
             }
             catch (Exception ex)
             {
                 return Fail<UserAuthDto>(ex.InnerException?.Message ?? ex.Message);
             }
         }
+        public async Task<ApiResponse<UserAuthDto>> RegisterWithRoleAsync(RegisterDto dto, string roleName, bool mustChangePassword, string? avatarUrl = null)
+        {
+            try
+            {
+                var result = await CreateUserAccountAsync(dto, roleName, UserStatus.Active, mustChangePassword, avatarUrl);
+                if (!result.Success) return result;
+                return Ok(result.Data, mustChangePassword
+                    ? "Account created successfully. The user must change their password on first login."
+                    : "Account created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Fail<UserAuthDto>(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
         public async Task<ApiResponse<AuthResponseDto>> LoginAsync(LoginDto dto)
         {
             try
@@ -269,6 +255,51 @@ namespace LogisticsERP.API.Services
                 }
             };
 
+        }
+
+        private async Task<ApiResponse<UserAuthDto>> CreateUserAccountAsync(
+     RegisterDto dto, string roleName, UserStatus status, bool mustChangePassword, string? avatarUrl)
+        {
+            var userNameTaken = await _context.Users.AnyAsync(u => u.UserName.ToLower() == dto.Username.ToLower());
+            if (userNameTaken)
+                return Fail<UserAuthDto>("This username is already taken.");
+
+            var emailTaken = await _context.Users.AnyAsync(u => u.Email.ToLower() == dto.Email.ToLower());
+            if (emailTaken)
+                return Fail<UserAuthDto>("An account with this email already exists.");
+
+            var role = await _context.UserRole.FirstOrDefaultAsync(r => r.RoleName == roleName);
+            if (role == null)
+                return Fail<UserAuthDto>($"Role '{roleName}' is not configured. Please contact an admin.");
+
+            var user = new User
+            {
+                UserName = dto.Username,
+                FullName = dto.Fullname,
+                Email = dto.Email,
+                ProfilePictureUrl = avatarUrl ?? "",
+                PhoneNumber = dto.PhoneNumber,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                Status = status,
+                RoleId = role.RoleId,
+                MustChangePassword = mustChangePassword,
+            };
+
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+
+            var result = new UserAuthDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email,
+                ProfilePictureUrl = user.ProfilePictureUrl,
+                RoleId = role.RoleId,
+                RoleName = role.RoleName,
+            };
+
+            return Ok(result, "Account created successfully.");
         }
     }
 }

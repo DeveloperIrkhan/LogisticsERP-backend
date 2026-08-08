@@ -17,6 +17,7 @@ namespace LogisticsERP.API.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? ApprovedBy { get; set; }
         public DateTime? ApprovedAt { get; set; }
+        public bool MustChangePassword { get; set; } = false;
 
         //relationship with Role
         [ForeignKey("RoleId")]

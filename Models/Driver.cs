@@ -27,6 +27,9 @@ namespace LogisticsERP.API.Models
         //FORIGN KEY TABLE 
         // Navigation property for the related Vehicle
         // Nullable, optional assignment
+        public string? UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public User? User { get; set; }
         public string? VehicleId { get; set; }
         [ForeignKey("VehicleId")] 
         public Vehicle? Vehicle { get; set; }

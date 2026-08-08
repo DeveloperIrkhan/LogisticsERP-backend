@@ -12,6 +12,7 @@ namespace LogisticsERP.API.interfaces
         Task<ApiResponse<bool>> ForgotPasswordAsync(string email);
         Task<ApiResponse<bool>> ResetPasswordAsync(ResetPasswordDto dto);
         Task<ApiResponse<bool>> ChangePasswordAsync(string userId, ChangePasswordDto dto);
-
+        Task<ApiResponse<UserAuthDto>> RegisterWithRoleAsync(
+    RegisterDto dto, string roleName, bool mustChangePassword, string? avatarUrl = null);
     }
 }

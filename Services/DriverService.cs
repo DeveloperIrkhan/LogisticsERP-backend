@@ -15,12 +15,13 @@ namespace LogisticsERP.API.Services
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IAuthService _authService;
         private readonly IGenericRepo<Driver> _driverGenRepo;
         private readonly IDriverRepo _driverRepo;
         private readonly IVehicleRepo _vehRepo;
         private readonly IGenericRepo<Vehicle> _vehicleGenRepo;
 
-        public DriverService(IGenericRepo<Driver> genericDriverRepo, IGenericRepo<Vehicle> genericVehicleReop, IMapper mapper, AppDbContext appDbContext, IVehicleRepo vehicle, IDriverRepo driverRepo)
+        public DriverService(IGenericRepo<Driver> genericDriverRepo, IAuthService authService, IGenericRepo<Vehicle> genericVehicleReop, IMapper mapper, AppDbContext appDbContext, IVehicleRepo vehicle, IDriverRepo driverRepo)
         {
             _driverGenRepo = genericDriverRepo;
             _driverRepo = driverRepo;
@@ -28,23 +29,25 @@ namespace LogisticsERP.API.Services
             _vehicleGenRepo = genericVehicleReop;
             _context = appDbContext;
             _mapper = mapper;
+            _authService = authService;
         }
 
         #region  crud
         //done
         public async Task<ApiResponse<DriverResponseDto>> CreateDriver(DriverCreateDto dto, string? PhotoUrl, string? LicenseUrl)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            if (dto == null)
+                return Fail<DriverResponseDto>("Driver data is required.");
+
+            if (await _driverRepo.IsCNICDuplicateAsync(dto.CNIC))
+                return Fail<DriverResponseDto>("A driver with this CNIC already exists.");
+
+            if (await _driverRepo.IsLicenseDuplicateAsync(dto.LicenseNumber))
+                return Fail<DriverResponseDto>("A driver with this license number already exists.");
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                if (dto == null)
-                    return Fail<DriverResponseDto>("Driver data is required.");
-
-                if (await _driverRepo.IsCNICDuplicateAsync(dto.CNIC))
-                    return Fail<DriverResponseDto>("A driver with this CNIC already exists.");
-
-                if (await _driverRepo.IsLicenseDuplicateAsync(dto.LicenseNumber))
-                    return Fail<DriverResponseDto>("A driver with this license number already exists.");
 
                 //creating driver login as well
                 var registerDto = new RegisterDto
@@ -55,42 +58,27 @@ namespace LogisticsERP.API.Services
                     PhoneNumber = dto.MobileNumber,
                     Password = "Driver@123",
                 };
-                var userNameTaken = await _context.Users.AnyAsync(u => u.UserName.ToLower()
-                == registerDto.Username.ToLower());
-                if (userNameTaken)
-                    return Fail<DriverResponseDto>("This username is already taken.");
 
-                var emailTaken = await _context.Users.AnyAsync(u => u.Email.ToLower() == dto.Email.ToLower());
-                if (emailTaken)
-                    return Fail<DriverResponseDto>("An account with this email already exists.");
-
-                var defaultRole = await _context.UserRole
-                    .FirstOrDefaultAsync(r => r.RoleName == RoleNames.Driver);
-                if (defaultRole == null)
-                    return Fail<DriverResponseDto>("Signup is temporarily unavailable — default role is not configured. Please contact an admin.");
-                var user = new User
+                var userResult = await _authService.RegisterWithRoleAsync(
+            registerDto, RoleNames.Driver, mustChangePassword: true, avatarUrl: PhotoUrl);
+                if (!userResult.Success)
                 {
-                    UserName = registerDto.Username,
-                    FullName = registerDto.Fullname,
-                    Email = registerDto.Email,
-                    ProfilePictureUrl = PhotoUrl ?? "",
-                    PhoneNumber = registerDto.PhoneNumber,
-                    Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
-                    Status = UserStatus.Pending,
-                    RoleId = defaultRole.RoleId,
-                };
+                    await transaction.RollbackAsync();
+                    return Fail<DriverResponseDto>($"Could not create driver login: {userResult.Message}");
+                }
+
 
                 var driver = _mapper.Map<Driver>(dto);
                 driver.PhotoUrl = PhotoUrl;
                 driver.LicenseUrl = LicenseUrl;
+                driver.UserId = userResult.Data.UserId;
 
                 await _driverGenRepo.AddAsync(driver);
-                await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
 
+                await transaction.CommitAsync();
                 return Ok(_mapper.Map<DriverResponseDto>(driver),
-                    "Driver created successfully. Login: email as username, default password Driver@123");
+                    "Driver created successfully. Login: email as username, default password Driver@123 (must be changed on first login).");
             }
             catch (Exception ex)
             {
@@ -101,11 +89,17 @@ namespace LogisticsERP.API.Services
 
         public async Task<ApiResponse<bool>> DeleteDriver(string id)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 var driver = await _context.Drivers.FindAsync(id);
                 if (driver == null) return Fail<bool>("Driver not found.");
-                var linkedUserId = driver.DriverId;
+
+                var linkedUserId = driver.UserId;
+
+                await _driverGenRepo.Delete(id);
+                await _context.SaveChangesAsync();
+
                 if (!string.IsNullOrEmpty(linkedUserId))
                 {
                     var user = await _context.Users.FindAsync(linkedUserId);
@@ -116,14 +110,12 @@ namespace LogisticsERP.API.Services
                     }
                 }
 
-
-                await _driverGenRepo.Delete(id);
-                await _context.SaveChangesAsync();
-                return Ok(true, driver == null ? "Driver record deleted successfully!" : "Driver and linked login deleted successfully!");
+                await transaction.CommitAsync();
+                return Ok(true, "Driver and linked login deleted successfully!");
             }
             catch (Exception ex)
             {
-
+                await transaction.RollbackAsync();
                 return Fail<bool>(ex.InnerException?.Message ?? ex.Message);
             }
         }
