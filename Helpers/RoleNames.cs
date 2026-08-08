@@ -12,10 +12,10 @@
 
         public static readonly string[] All =
             [
-            Admin, FleetManager, DataEntryOperator, Driver
+            Admin, FleetManager, DataEntryOperator, Driver, Viewer
             ];
 
         // Role every public sign-up gets by default until an Admin reviews it on approval.
-        public const string DefaultSignupRole = DataEntryOperator;
+        public const string DefaultSignupRole = Viewer;
     }
 }

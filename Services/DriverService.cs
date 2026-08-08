@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
 using LogisticsERP.API.Data;
+using LogisticsERP.API.DTOs.Auth;
 using LogisticsERP.API.DTOs.Drivers;
 using LogisticsERP.API.enums;
 using LogisticsERP.API.Helpers;
@@ -32,6 +34,7 @@ namespace LogisticsERP.API.Services
         //done
         public async Task<ApiResponse<DriverResponseDto>> CreateDriver(DriverCreateDto dto, string? PhotoUrl, string? LicenseUrl)
         {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 if (dto == null)
@@ -43,17 +46,55 @@ namespace LogisticsERP.API.Services
                 if (await _driverRepo.IsLicenseDuplicateAsync(dto.LicenseNumber))
                     return Fail<DriverResponseDto>("A driver with this license number already exists.");
 
+                //creating driver login as well
+                var registerDto = new RegisterDto
+                {
+                    Email = dto.Email,
+                    Username = dto.Email,
+                    Fullname = dto.FullName,
+                    PhoneNumber = dto.MobileNumber,
+                    Password = "Driver@123",
+                };
+                var userNameTaken = await _context.Users.AnyAsync(u => u.UserName.ToLower()
+                == registerDto.Username.ToLower());
+                if (userNameTaken)
+                    return Fail<DriverResponseDto>("This username is already taken.");
+
+                var emailTaken = await _context.Users.AnyAsync(u => u.Email.ToLower() == dto.Email.ToLower());
+                if (emailTaken)
+                    return Fail<DriverResponseDto>("An account with this email already exists.");
+
+                var defaultRole = await _context.UserRole
+                    .FirstOrDefaultAsync(r => r.RoleName == RoleNames.Driver);
+                if (defaultRole == null)
+                    return Fail<DriverResponseDto>("Signup is temporarily unavailable — default role is not configured. Please contact an admin.");
+                var user = new User
+                {
+                    UserName = registerDto.Username,
+                    FullName = registerDto.Fullname,
+                    Email = registerDto.Email,
+                    ProfilePictureUrl = PhotoUrl ?? "",
+                    PhoneNumber = registerDto.PhoneNumber,
+                    Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+                    Status = UserStatus.Pending,
+                    RoleId = defaultRole.RoleId,
+                };
+
                 var driver = _mapper.Map<Driver>(dto);
                 driver.PhotoUrl = PhotoUrl;
                 driver.LicenseUrl = LicenseUrl;
 
                 await _driverGenRepo.AddAsync(driver);
+                await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
-                return Ok(_mapper.Map<DriverResponseDto>(driver), "Driver created successfully.");
+                return Ok(_mapper.Map<DriverResponseDto>(driver),
+                    "Driver created successfully. Login: email as username, default password Driver@123");
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return Fail<DriverResponseDto>(ex.InnerException?.Message ?? ex.Message);
             }
         }
@@ -62,12 +103,27 @@ namespace LogisticsERP.API.Services
         {
             try
             {
+                var driver = await _context.Drivers.FindAsync(id);
+                if (driver == null) return Fail<bool>("Driver not found.");
+                var linkedUserId = driver.DriverId;
+                if (!string.IsNullOrEmpty(linkedUserId))
+                {
+                    var user = await _context.Users.FindAsync(linkedUserId);
+                    if (user != null)
+                    {
+                        _context.Users.Remove(user);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+
                 await _driverGenRepo.Delete(id);
                 await _context.SaveChangesAsync();
-                return Ok(true, "driver record deleted successfully!");
+                return Ok(true, driver == null ? "Driver record deleted successfully!" : "Driver and linked login deleted successfully!");
             }
             catch (Exception ex)
             {
+
                 return Fail<bool>(ex.InnerException?.Message ?? ex.Message);
             }
         }
