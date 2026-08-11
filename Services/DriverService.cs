@@ -16,12 +16,13 @@ namespace LogisticsERP.API.Services
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
+        private readonly IEmailService _emailService;
         private readonly IGenericRepo<Driver> _driverGenRepo;
         private readonly IDriverRepo _driverRepo;
         private readonly IVehicleRepo _vehRepo;
         private readonly IGenericRepo<Vehicle> _vehicleGenRepo;
 
-        public DriverService(IGenericRepo<Driver> genericDriverRepo, IAuthService authService, IGenericRepo<Vehicle> genericVehicleReop, IMapper mapper, AppDbContext appDbContext, IVehicleRepo vehicle, IDriverRepo driverRepo)
+        public DriverService(IGenericRepo<Driver> genericDriverRepo, IEmailService emailService, IAuthService authService, IGenericRepo<Vehicle> genericVehicleReop, IMapper mapper, AppDbContext appDbContext, IVehicleRepo vehicle, IDriverRepo driverRepo)
         {
             _driverGenRepo = genericDriverRepo;
             _driverRepo = driverRepo;
@@ -30,6 +31,7 @@ namespace LogisticsERP.API.Services
             _context = appDbContext;
             _mapper = mapper;
             _authService = authService;
+            _emailService = emailService;
         }
 
         #region  crud
@@ -67,7 +69,8 @@ namespace LogisticsERP.API.Services
                     return Fail<DriverResponseDto>($"Could not create driver login: {userResult.Message}");
                 }
 
-
+                await _emailService.SendDriverPasswordLink(registerDto.Email, "Account Registeration!",
+                    $"your account created successfully and your {registerDto.Password} your password for login, please login and change your password Immedieatly!", registerDto);
                 var driver = _mapper.Map<Driver>(dto);
                 driver.PhotoUrl = PhotoUrl;
                 driver.LicenseUrl = LicenseUrl;

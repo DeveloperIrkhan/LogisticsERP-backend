@@ -91,6 +91,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IRosterService, RosterService>();
+builder.Services.AddScoped<IItemSaleService, ItemSaleService>();
 builder.Services.AddScoped<IGenericRepo<DutyRoster>, GenericRepo<DutyRoster>>();
 // Add repositories to the container
 builder.Services.AddScoped<IGenericRepo<DutyRosterEntry>, GenericRepo<DutyRosterEntry>>();

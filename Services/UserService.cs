@@ -101,7 +101,7 @@ namespace LogisticsERP.API.Services
                 user.ApprovedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
-                //await _emailService.SendAccountApprovedEmailAsync(user.Email, user.FullName);
+                await _emailService.SendAccountApprovedEmailAsync(user.Email, user.FullName);
 
                 return Ok(MapOne(user), "User approved successfully.");
             }
@@ -123,7 +123,7 @@ namespace LogisticsERP.API.Services
                 user.ApprovedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
-                //await _emailService.SendAccountRejectedEmailAsync(user.Email, user.FullName, dto.Reason);
+                await _emailService.SendAccountRejectedEmailAsync(user.Email, user.FullName, dto.Reason);
 
                 return Ok(MapOne(user), "User rejected.");
             }
