@@ -34,7 +34,7 @@ namespace LogisticsERP.API.Models
         public string? ApprovedBy { get; set; }
         [ForeignKey("UserId")]
         public User? ApprovedByUser { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     }
 }

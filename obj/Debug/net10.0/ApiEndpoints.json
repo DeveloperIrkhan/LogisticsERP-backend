@@ -798,6 +798,22 @@
   },
   {
     "ContainingType": "LogisticsERP.API.Controllers.DutyController",
+    "Method": "ExportDutyPdf",
+    "RelativePath": "api/Duty/generate-duty-pdf/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LogisticsERP.API.Controllers.DutyController",
     "Method": "GetActiveDuties",
     "RelativePath": "api/Duty/get-active-duties",
     "HttpMethod": "GET",

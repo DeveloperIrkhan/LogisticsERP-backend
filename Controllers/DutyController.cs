@@ -118,5 +118,13 @@ namespace LogisticsERP.API.Controllers
             var result = await _service.CancelDutyAsync(id, reason);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+
+
+        [HttpGet("generate-duty-pdf/{id}")]
+        public async Task<IActionResult> ExportDutyPdf([FromRoute] string id) 
+        {
+            var pdf = await _service.ExportDutyPdfAsync(id);
+            return File(pdf, "application/pdf", $"DutyReport_{DateTime.Now:yyyyMMdd}.pdf");
+        }
     }
 }

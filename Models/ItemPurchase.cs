@@ -11,7 +11,7 @@ namespace LogisticsERP.API.Models
 
         public string ItemId { get; set; }
         [ForeignKey(nameof(ItemId))]
-        public Item Item { get; set; } = new();
+        public Item? Item { get; set; }
 
         [Required]
         public decimal Quantity { get; set; }

@@ -27,5 +27,9 @@ namespace LogisticsERP.API.interfaces
         Task<ApiResponse<DutyResponseDto>> ApproveDutyAsync(string dutyId, string approvedBy);
         public Task<ApiResponse<DutyResponseDto>> CancelDutyAsync(string dutyId, string reason);
 
+
+        //------PRINTING------------------------------------------------------
+        Task<byte[]> ExportDutyPdfAsync(string id);
+
     }
 }

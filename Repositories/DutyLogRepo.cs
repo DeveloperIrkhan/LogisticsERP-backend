@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LogisticsERP.API.Repositories
 {
     public class DutyLogRepo : IDutyRepo
-       
+
     {
         private readonly AppDbContext _context;
 
@@ -27,7 +27,7 @@ namespace LogisticsERP.API.Repositories
         public async Task<List<DutyLogs>> GetByDateRangeAsync(DateTime from, DateTime to)
         {
             return await _context.DutyLogs
-               .Where(x=> x.DateOut <= to && x.DateIn >= from)
+               .Where(x => x.DateOut <= to && x.DateIn >= from)
                .OrderByDescending(x => x.DateOut)
                .ToListAsync();
         }
@@ -39,7 +39,14 @@ namespace LogisticsERP.API.Repositories
                .OrderByDescending(x => x.DateOut)
                .ToListAsync();
         }
-
+        public async Task<DutyLogs> getFullDutyById(string dutyId)
+        {
+            var result = await _context.DutyLogs
+                .Include(x => x.Driver)
+                .Include(x => x.Vehicle)
+                .FirstOrDefaultAsync(x => x.DutyId == dutyId);
+            return result ?? throw new Exception("duty not found.");
+        }
         public async Task<List<DutyLogs>> GetByStatusAsync(DutyStatus status)
         {
             return await _context.DutyLogs

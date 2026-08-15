@@ -34,7 +34,7 @@ namespace LogisticsERP.API.DTOs.Item
     {
         public string ItemPurchaseId { get; set; } 
         public string ItemId { get; set; }
-        public string ItemName { get; set; } = string.Empty;
+        public string ItemName { get; set; } 
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal TotalAmount { get; set; }

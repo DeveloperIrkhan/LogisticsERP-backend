@@ -1432,6 +1432,28 @@
         }
       }
     },
+    "/api/Duty/generate-duty-pdf/{id}": {
+      "get": {
+        "tags": [
+          "Duty"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Expense/add-expense": {
       "post": {
         "tags": [
@@ -5686,6 +5708,11 @@
           "dateOut": {
             "type": "string",
             "format": "date-time"
+          },
+          "dateIn": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "dutyType": {
             "$ref": "#/components/schemas/DutyType"

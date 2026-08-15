@@ -5,6 +5,7 @@ namespace LogisticsERP.API.interfaces
 {
     public interface IDutyRepo
     {
+        Task<DutyLogs?> getFullDutyById(string dutyId);
         Task<List<DutyLogs>> GetByVehicleAsync(string vehicleId);
         Task<List<DutyLogs>> GetByDriverAsync(string driverId);
         Task<List<DutyLogs>> GetByStatusAsync(DutyStatus status);

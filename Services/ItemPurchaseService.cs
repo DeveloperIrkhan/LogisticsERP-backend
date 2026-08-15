@@ -340,7 +340,7 @@ namespace LogisticsERP.API.Services
         {
             ItemPurchaseId = purchase.ItemPurchaseId,
             ItemId = purchase.ItemId,
-            ItemName = purchase.Item?.ItemName ?? string.Empty,
+            ItemName = purchase.Item?.ItemName,
             Quantity = purchase.Quantity,
             UnitPrice = purchase.UnitPrice,
             TotalAmount = purchase.TotalAmount,

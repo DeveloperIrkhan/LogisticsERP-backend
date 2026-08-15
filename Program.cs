@@ -4,17 +4,18 @@ using LogisticsERP.API.interfaces;
 using LogisticsERP.API.Models;
 using LogisticsERP.API.Repositories;
 using LogisticsERP.API.Services;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using QuestPDF.Infrastructure;
 using System.Text;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+QuestPDF.Settings.License = LicenseType.Community;
 
 // configuring swagger UI
 builder.Services.AddEndpointsApiExplorer();
